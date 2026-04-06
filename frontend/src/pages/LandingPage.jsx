@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Features from "../components/Features";
 import Testimonials from "../components/Testimonials";
 import { Menu, X } from "lucide-react";
@@ -8,15 +8,38 @@ import Footer from "../components/Footer";
 
 const LandingPage = () => {
   const [isOpen, setOpen] = useState(false);
+  const featureRef = useRef(null);
+  const testimonialRef = useRef(null);
   const navigate = useNavigate();
+
+  const scrollToFeatures = () => {
+    console.log(featureRef);
+    console.log(featureRef.current);
+    featureRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToTestimonials = () => {
+    testimonialRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div>
       <div className="w-full flex justify-between px-10 py-3 border-b border-gray-300">
         <h1 className="font-bold text-xl my-auto">TaskFlow</h1>
 
         <div className="hidden md:flex gap-5 items-center">
-          <p className="text-gray-500 font-medium text-sm">Features</p>
-          <p className="text-gray-500 font-medium text-sm">Testimonials</p>
+          <p
+            onClick={scrollToFeatures}
+            className="text-gray-500 font-medium text-sm cursor-pointer"
+          >
+            Features
+          </p>
+          <p
+            onClick={scrollToTestimonials}
+            className="text-gray-500 font-medium text-sm cursor-pointer"
+          >
+            Testimonials
+          </p>
           <p className="text-gray-500 font-medium text-sm">pricing</p>
           <p
             onClick={() => navigate("/login")}
@@ -93,9 +116,13 @@ const LandingPage = () => {
           />
         </div>
       </div>
-      <Features />
-      <Testimonials />
-      <Footer/>
+      <div ref={featureRef}>
+        <Features />
+      </div>
+      <div ref={testimonialRef}>
+        <Testimonials />
+      </div>
+      <Footer />
     </div>
   );
 };

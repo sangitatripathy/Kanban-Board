@@ -26,7 +26,6 @@ const Login = () => {
     try {
       const res = await postRequest("/auth/login", formData);
       login(res);
-      console.log("login success", res);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
@@ -72,6 +71,7 @@ const Login = () => {
         >
           Sign In
         </button>
+        <p className="flex justify-end text-sm text-gray-600 underline cursor-pointer">Forgot password</p>
         <p className="flex text-sm justify-center mt-5 text-gray-500">
           Don't have an account?{" "}
           <Link to="/signup" className="underline text-sm text-blue-500 cursor-pointer">

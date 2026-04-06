@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { sendEmail } from "../config/sendEmail.js";
+import { sendEmail } from "../utility/sendEmail.js";
 import crypto from "crypto";
 import { redisClient } from "../server.js";
 

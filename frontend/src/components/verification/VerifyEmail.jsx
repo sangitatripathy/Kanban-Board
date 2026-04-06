@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from "react";
-import { getRequest } from "../lib/axios";
+import { getRequest } from "../../lib/axios";
 
 const VerifyEmail = () => {
   const [message, setMessage] = useState("Verifying...");
-  const hasCalled = useRef(false)
+  const hasCalled = useRef(false);
 
   useEffect(() => {
-    if(hasCalled.current) return;
-    hasCalled.current=true
+    if (hasCalled.current) return;
+    hasCalled.current = true;
     const token = new URLSearchParams(window.location.search).get("token");
 
     if (!token) {

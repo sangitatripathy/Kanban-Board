@@ -23,7 +23,7 @@ const Input = ({
         placeholder={placeholder} 
         onChange={onChange}
         value={value}
-        className='outline-none bg-transparent w-full'/>
+        className='outline-none bg-transparent w-full text-sm'/>
       </div>
       {error && (
         <p className="text-red-500 text-xs">{error}</p>

@@ -18,7 +18,7 @@ const Drawer = () => {
         <h1 className="text-xl font-bold">TaskFlow</h1>
       </div>
       <div className="flex flex-col gap-2 mt-2">
-        <div className="flex items-center gap-3 p-2 rounded-lg bg-blue-100 dark:bg-gray-700">
+        <div onClick={()=>navigate('/dashboard')} className="flex items-center gap-3 p-2 rounded-lg bg-blue-100 dark:bg-gray-700">
           <LayoutDashboard size={18} />
           <span className="text-sm">Dashboard</span>
         </div>
@@ -50,7 +50,7 @@ const Drawer = () => {
             <span className="text-sm">Personal</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={()=>navigate('/workspace/work')}>
             <div className="w-6 h-6 bg-blue-500 text-white flex items-center justify-center rounded">
               W
             </div>

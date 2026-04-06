@@ -7,6 +7,9 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import authRoute from "./routes/authRoute.js";
 import organisationRoute from "./Routes/organizationRoute.js";
+import inviteRoute from "./Routes/invite.js";
+import boardRoute from "./Routes/boardRoute.js"
+import memberRoute from './Routes/members.js'
 import { createClient } from "redis";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -52,9 +55,13 @@ try {
   console.error("Redis connection failed:", err);
 }
 
+
 /* Routes */
 app.use("/api/auth", authRoute);
-app.use("/api/org",organisationRoute)
+app.use("/api/org",organisationRoute);
+app.use("/api/invite",inviteRoute);
+app.use("/api/org",boardRoute);
+app.use("/api/member",memberRoute)
 app.use("/uploads", express.static("uploads"));
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -83,5 +90,5 @@ app.get("/test", async (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
+  console.log(`Server is running on PORT http://localhost:${PORT}`);
 });
