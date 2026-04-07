@@ -6,7 +6,8 @@ import VerifyInvitation from "./components/verification/VerifyInvitation";
 import PrivateRoute from "./components/privateRoute";
 import Dashboard from "./pages/Dashboard";
 import WorkSpace from "./pages/WorkSpace";
-import Boards from "./components/Boards";
+import Organization from "./components/Organization";
+import Board from "./components/Board";
 import Profile from "./pages/Profile";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -18,12 +19,13 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/invite/accept/:token" element={<VerifyInvitation/>}/>
+        <Route path="/invite/accept/:token" element={<VerifyInvitation />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/workspace/work" element={<WorkSpace/>}/>
-          <Route path="/workspace/work/:orgId" element={<Boards/>}/>
+          <Route path="/workspace/work" element={<WorkSpace />} />
+          <Route path="/workspace/work/:orgId" element={<Organization />} />
+          <Route path="/board/:boardId" element={<Board/>}/>
         </Route>
         <Route path="*" element={<h1>Page not Found</h1>} />
       </Routes>

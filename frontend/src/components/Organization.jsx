@@ -8,12 +8,12 @@ import {
   ClipboardCheck,
   ChartNoAxesCombined,
 } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Drawer from "../components/Drawer";
-import MemberList from "../components/MemberList";
-import BoardList from "../components/BoardList";
+import Navbar from "./Navbar";
+import Drawer from "./Drawer";
+import MemberList from "./MemberList";
+import BoardList from "./BoardList";
 
-const Boards = () => {
+const Organization = () => {
   const [boards, setBoards] = useState(null);
   const [member, setMember] = useState([]);
   const [invites, setInvites] = useState([]);
@@ -58,6 +58,17 @@ const Boards = () => {
     }
   };
 
+  const createBoard = async (boardName) => {
+    try {
+      const res = await postRequest(`/org/${orgId}/board`, {
+        boardName,
+      });
+      setBoards((prev) => [...prev, res]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,9 +77,6 @@ const Boards = () => {
     getMembers();
     getInvites();
   }, [orgId]);
-
-  console.log(boards);
-  console.log(invites);
 
   const created = useMemo(() => timeAgo(org?.createdAt), [org]);
   return (
@@ -144,7 +152,9 @@ const Boards = () => {
                 onInvite={sendInvite}
               />
             )}
-            {activeTab === "boards" && <BoardList boards={boards} />}
+            {activeTab === "boards" && (
+              <BoardList boards={boards} onCreateBoard={createBoard} />
+            )}
           </div>
         </div>
       </div>
@@ -152,4 +162,4 @@ const Boards = () => {
   );
 };
 
-export default Boards;
+export default Organization;

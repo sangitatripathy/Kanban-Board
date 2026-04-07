@@ -1,26 +1,34 @@
 import React, { useState } from "react";
 
-const InviteModal = ({ onClose, onCreate }) => {
-  const [email, setEmail] = useState("");
+const InviteModal = ({
+  onClose,
+  onCreate,
+  title = "Enter value",
+  placeholder = "Enter here...",
+  buttonText = "Submit",
+}) => {
+  const [value, setValue] = useState("");
 
-  const handleSubmit = () =>{
-    if(!email) return
-    onCreate(email)
-    setEmail("");
+  const handleSubmit = () => {
+    if (!value) return;
+    onCreate(value);
+    setValue("");
     onClose();
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-100 shadow-xl">
-        <h2 className="text-md font-semibold mb-4">Invite Member</h2>
+        <h2 className="text-md font-semibold mb-4">{title}</h2>
+
         <input
-          type="email"
-          placeholder="johndoe@gmail.com"
+          type="text"
+          placeholder={placeholder}
           className="w-full border rounded-lg px-3 py-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
         />
+
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
@@ -33,7 +41,7 @@ const InviteModal = ({ onClose, onCreate }) => {
             onClick={handleSubmit}
             className="px-3 py-1 rounded-2xl bg-blue-500 hover:bg-blue-600 text-white text-sm"
           >
-            Send Invite 
+            {buttonText}
           </button>
         </div>
       </div>
