@@ -16,10 +16,10 @@ const generateVerificationToken = () => {
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const file = req.file
-    let imageUrl =null
-    if(file){
-      imageUrl=`/uploads/${file.filename}`
+    const file = req.file;
+    let imageUrl = null;
+    if (file) {
+      imageUrl = `/uploads/${file.filename}`;
     }
 
     const rateLimitKey = `register-rate-limit:${req.ip}:${email}`;
@@ -47,13 +47,13 @@ export const registerUser = async (req, res) => {
       isVerified: false,
     });
 
-    const token = generateVerificationToken();
+    const verificationToken = generateVerificationToken();
 
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
     await redisClient.set(`verify:${hashedToken}`, user.email, {
       EX: 600,
     });
-    const verifyUrl = `http://localhost:5173/verify-email?token=${token}`;
+    const verifyUrl = `http://localhost:5173/verify-email?token=${verificationToken}`;
 
     await sendEmail({
       email: user.email,
@@ -66,13 +66,22 @@ export const registerUser = async (req, res) => {
     });
 
     await redisClient.set(rateLimitKey, "1", { EX: 60 });
+
+    const token = generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in prod
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       imageUrl: user.imageUrl,
       role: user.role,
-      token: generateToken(user._id),
       message: "Registration successful. Please verify your email.",
     });
   } catch (error) {
@@ -94,9 +103,7 @@ export const verifyEmailHandler = async (req, res) => {
     const email = await redisClient.get(`verify:${hashedToken}`);
 
     if (!email) {
-      return res
-        .status(400)
-        .json({ message: "Already verified or expired" });
+      return res.status(400).json({ message: "Already verified or expired" });
     }
     const user = await User.findOneAndUpdate(
       { email },
@@ -134,13 +141,22 @@ export const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
+
+    const token = generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in prod
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    
     res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       imageUrl: user.imageUrl,
       role: user.role,
-      token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error: error.message });

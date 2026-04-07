@@ -4,12 +4,16 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
+
 import connectDB from "./config/db.js";
+
 import authRoute from "./routes/authRoute.js";
 import organisationRoute from "./Routes/organizationRoute.js";
 import inviteRoute from "./Routes/invite.js";
 import boardRoute from "./Routes/boardRoute.js"
 import memberRoute from './Routes/members.js'
+
 import { createClient } from "redis";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -20,8 +24,7 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials:true
   }),
 );
 
@@ -33,6 +36,7 @@ app.use(
 
 /*Middleware*/
 app.use(express.json());
+app.use(cookieParser());
 
 /*connect to MongoDB*/
 connectDB();
