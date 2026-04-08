@@ -1,6 +1,7 @@
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import LandingPage from "./pages/LandingPage";
+import Reset from "./pages/Reset";
 import VerifyEmail from "./components/verification/VerifyEmail";
 import VerifyInvitation from "./components/verification/VerifyInvitation";
 import PrivateRoute from "./components/privateRoute";
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/reset-password" element={<Reset/>}/>
         <Route path="/invite/accept/:token" element={<VerifyInvitation />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />

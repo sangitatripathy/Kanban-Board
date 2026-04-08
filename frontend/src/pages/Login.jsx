@@ -11,6 +11,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -25,10 +26,22 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await postRequest("/auth/login", formData);
+      console.log(res)
       login(res);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  async function handleForget(formData) {
+    if (!formData.email) return setError("Enter Your email");
+    try {
+      const res = await postRequest('/auth/forgetpassword',{
+        email:formData.email
+      })
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -71,10 +84,18 @@ const Login = () => {
         >
           Sign In
         </button>
-        <p className="flex justify-end text-sm text-gray-600 underline cursor-pointer">Forgot password</p>
+        <p
+          onClick={() => handleForget(formData)}
+          className="flex justify-end text-sm text-gray-600 underline cursor-pointer mt-1"
+        >
+          Forgot password
+        </p>
         <p className="flex text-sm justify-center mt-5 text-gray-500">
           Don't have an account?{" "}
-          <Link to="/signup" className="underline text-sm text-blue-500 cursor-pointer">
+          <Link
+            to="/signup"
+            className="underline text-sm text-blue-500 cursor-pointer"
+          >
             Sign up
           </Link>{" "}
         </p>

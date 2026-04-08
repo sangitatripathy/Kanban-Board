@@ -1,35 +1,42 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { getRequest } from "@/lib/axios";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUser = async () => {
+    try {
+      const res = await getRequest("/auth/me"); // or /user/me
+      setUser(res);
+    } catch (err) {
+      setUser((prev) => prev ?? null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    console.log(storedUser);
-    console.log(JSON.parse(storedUser));
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    fetchUser();
   }, []);
 
-  const login = (userData) => {
+  const login = async (userData) => {
     setUser(userData);
-    console.log(userData);
-    console.log(JSON.stringify(userData));
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", userData.token);
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    try {
+      await getRequest("/auth/logout"); 
+    } catch (err) {
+      console.error(err);
+    }
     setUser(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
   };
-
+  console.log(user)
   return (
-    <UserContext.Provider value={{ user, setUser, login, logoutUser }}>
+    <UserContext.Provider value={{ user, setUser, login, logoutUser, loading }}>
       {children}
     </UserContext.Provider>
   );

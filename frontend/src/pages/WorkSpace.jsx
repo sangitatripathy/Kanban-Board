@@ -3,7 +3,7 @@ import Drawer from "../components/Drawer";
 import Navbar from "../components/Navbar";
 import { BookOpenCheck, SquarePlus } from "lucide-react";
 import { getRequest, postRequest } from "../lib/axios";
-import Modal from "../components/Modal";
+import Modal from "../components/Modal/Modal";
 import { useNavigate } from "react-router-dom";
 
 const WorkSpace = () => {

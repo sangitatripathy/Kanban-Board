@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 
 import { Crown, Users } from "lucide-react";
-import InviteModal from "./InviteModal";
+import InviteModal from "./Modal/InviteModal";
 import { timeAgo } from "@/utils/timeAgo";
 
 const MemberList = ({ member = [], invites = [], onInvite }) => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InviteModal from "./InviteModal";
+import InviteModal from "./Modal/InviteModal";
 import { SquarePlus } from "lucide-react";
 import { timeAgo } from "@/utils/timeAgo";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +35,7 @@ const BoardList = ({ boards = [], onCreateBoard }) => {
             return (
               <div
                 key={board._id}
-                onClick={()=>navigate(`/board/${board._id}`)}
+                onClick={() => navigate(`/board/${board._id}`)}
                 className="bg-white rounded-xl shadow-sm border hover:shadow-md transition cursor-pointer"
               >
                 <div
