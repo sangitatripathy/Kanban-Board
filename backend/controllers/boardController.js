@@ -18,7 +18,7 @@ export const createBoard = async (req, res) => {
   }
 };
 
-export const getBoards = async (req,res) => {
+export const getBoard = async (req,res) => {
   try{
     const { orgId } = req.params;
     const boards = await Boards.find({

@@ -49,7 +49,10 @@ export const registerUser = async (req, res) => {
 
     const verificationToken = generateVerificationToken();
 
-    const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(verificationToken)
+      .digest("hex");
     await redisClient.set(`verify:${hashedToken}`, user.email, {
       EX: 600,
     });
@@ -150,7 +153,7 @@ export const loginUser = async (req, res) => {
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-    
+
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -163,11 +166,21 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const logoutUser = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
 export const forgetpassword = async (req, res) => {
   try {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
+    console.log(user);
 
     if (!user) {
       return res
@@ -175,9 +188,13 @@ export const forgetpassword = async (req, res) => {
         .json({ message: "If user exists, a reset link has been sent" });
     }
     const token = generateVerificationToken();
+
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
     await redisClient.set(`reset:${hashedToken}`, user.email, { EX: 600 });
-    const resetUrl = `http://localhost:3000/api/auth/resetpassword?token=${token}`;
+
+    const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
+
     await sendEmail({
       email,
       subject: "Reset Password",
@@ -218,21 +235,36 @@ export const resetpassword = async (req, res) => {
       message: "Invalid or expired link",
     });
   }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(newPassword, salt);
-  const user = User.findOneAndUpdate(
-    { email: email },
-    { password: hashedPassword },
-    { new: true },
-  );
+  const user = await User.findOne({ email });
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+
+  user.password = hashedPassword;
+  await user.save();
 
   await redisClient.del(`reset:${hashedToken}`);
 
   res.status(200).json({
     message: "Password reset successful",
   });
+};
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    } else if (!user.isVerified) {
+      return res.status(403).json({ message: "Email not verified" });
+    } else {
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user", error: error.message });
+  }
 };

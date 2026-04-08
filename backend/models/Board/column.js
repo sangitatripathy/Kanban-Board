@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const BoardSchema = new mongoose.Schema({
+const ColumnSchema = new mongoose.Schema({
   title: String,
   boardId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -8,3 +8,6 @@ const BoardSchema = new mongoose.Schema({
   },
   position: Number,
 });
+export default mongoose.model("Column", ColumnSchema);
+
+
