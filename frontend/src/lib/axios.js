@@ -23,4 +23,13 @@ export async function postRequest(url,data) {
   }
 }
 
+export async function putRequest(url,data) {
+  try{
+    const res = await API.put(url,data);
+    return res.data;
+  }catch(err){
+    throw err.response?.data || err.message;
+  }
+}
+
 export default API;

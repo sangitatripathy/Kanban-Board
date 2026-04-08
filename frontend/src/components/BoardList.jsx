@@ -35,11 +35,11 @@ const BoardList = ({ boards = [], onCreateBoard }) => {
             return (
               <div
                 key={board._id}
-                onClick={() => navigate(`/board/${board._id}`)}
+                onClick={() => navigate(`/board/${board._id}`,{state:{board}})}
                 className="bg-white rounded-xl shadow-sm border hover:shadow-md transition cursor-pointer"
               >
                 <div
-                  className={`h-35 rounded-t-xl bg-gradient-to-r ${gradient}`}
+                  className={`h-35 rounded-t-xl bg-linear-to-r ${gradient}`}
                 />
 
                 <div className="p-2">

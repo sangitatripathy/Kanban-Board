@@ -8,7 +8,7 @@ import PrivateRoute from "./components/privateRoute";
 import Dashboard from "./pages/Dashboard";
 import WorkSpace from "./pages/WorkSpace";
 import Organization from "./components/Organization";
-import Board from "./components/Board";
+import Board from "./pages/Board";
 import Profile from "./pages/Profile";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 

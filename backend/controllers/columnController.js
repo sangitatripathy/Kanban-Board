@@ -50,23 +50,29 @@ export const getColumn = async (req, res) => {
 export const updateColumn = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, newIndex } = req.body;
 
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
-    }
-
-    const updatedColumn = await Column.findByIdAndUpdate(
-      id,
-      { title },
-      { new: true },
-    );
-
-    if (!updatedColumn) {
+    const column = await Column.findById(id);
+    if (!column) {
       return res.status(404).json({ message: "Column not found" });
     }
-    
-    res.status(200).json(updatedColumn);
+
+    if (title) {
+      column.title = title;
+    }
+
+    if(newIndex !== undefined){
+      const columns = await Column.find({boardId: column.boardId}).sort({position: 1});
+      const filtered = columns.filter(col => col._id.toString() !== id);
+      filtered.splice(newIndex, 0, column);
+      for(let i=0; i<filtered.length; i++){
+        await Column.findByIdAndUpdate(filtered[i]._id, {
+          position: i,
+        })
+      }
+    }
+    const updatedColumn = await column.save();
+    res.status(200).json({message:"Column updated successfully",updatedColumn});
   } catch (error) {
     res
       .status(500)
