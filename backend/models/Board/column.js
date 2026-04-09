@@ -9,5 +9,3 @@ const ColumnSchema = new mongoose.Schema({
   position: Number,
 });
 export default mongoose.model("Column", ColumnSchema);
-
-

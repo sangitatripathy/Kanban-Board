@@ -1,9 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const BoardSchema = new mongoose.Schema(
   {
-    boardName:{type:String,required:true},
-    orgId:{ type: mongoose.Schema.Types.ObjectId, ref: "Organization",required:true },
+    boardName: { type: String, required: true },
+    orgId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,9 +19,10 @@ const BoardSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    isArchived: { type: Boolean, default: false }
+    boardDescription: { type: String },
+    isArchived: { type: Boolean, default: false },
   },
-  { timestamps: true }
-)
+  { timestamps: true },
+);
 
 export default mongoose.model("Board", BoardSchema);
