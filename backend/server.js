@@ -13,6 +13,7 @@ import organisationRoute from "./Routes/organizationRoute.js";
 import inviteRoute from "./Routes/invite.js";
 import boardRoute from "./Routes/boardRoute.js";
 import columnRoute from "./Routes/columnRoute.js";
+import cardRoute from "./Routes/cardRoute.js";
 import memberRoute from './Routes/members.js'
 
 import { createClient } from "redis";
@@ -65,9 +66,11 @@ try {
 app.use("/api/auth", authRoute);
 app.use("/api/org",organisationRoute);
 app.use("/api/invite",inviteRoute);
+
 app.use("/api/org",boardRoute);
-app.use("/api/board",columnRoute)
-app.use("/api/member",memberRoute)
+app.use("/api/board",columnRoute);
+app.use("/api/column",cardRoute);
+app.use("/api/member",memberRoute);
 app.use("/uploads", express.static("uploads"));
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
