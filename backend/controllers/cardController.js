@@ -25,17 +25,6 @@ export const createCard = async (req, res) => {
   }
 };
 
-// export const getCards = async (req, res) => {
-//   try {
-//     const {boardId} = req.body
-
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ message: "Error fetching cards", error: error.message });
-//   }
-// };
-
 export const getCardById = async (req, res) => {
   try {
     const { cardId } = req.params;
@@ -86,5 +75,54 @@ export const deleteCard = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting card", error: error.message });
+  }
+};
+
+export const reorderCard = async (req, res) => {
+  try {
+    const { sourceColId, targetColId, sourceCards, targetCards } = req.body;
+    let bulkOps = [];
+
+    if (sourceColId == targetColId) {
+      sourceCards.forEach((card) => {
+        bulkOps.push({
+          updateOne: {
+            filter: { _id: card._id },
+            update: { position: card.position },
+          },
+        });
+      });
+    } else {
+      sourceCards.forEach((card) => {
+        bulkOps.push({
+          updateOne: {
+            filter: { _id: card._id },
+            update: {
+              position: card.position,
+              columnId: sourceColId,
+            },
+          },
+        });
+      });
+
+      targetCards.forEach((card) => {
+        bulkOps.push({
+          updateOne: {
+            filter: { _id: card._id },
+            update: {
+              position: card.position,
+              columnId: targetColId,
+            },
+          },
+        });
+      });
+    }
+
+    await Card.bulkWrite(bulkOps);
+    res.status(200).json({ message: "Cards reordered successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to reorder Cards", error: error.message });
   }
 };

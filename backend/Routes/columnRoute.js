@@ -6,6 +6,7 @@ import {
   getAllColumn,
   updateColumn,
   deleteColumn,
+  reorderColumn
 } from "../controllers/columnController.js";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get("/:boardId/columns", verifyToken, getAllColumn);
 router.get("/:boardId/:id", verifyToken, getColumn);
 router.put("/:boardId/column/:id", verifyToken, updateColumn);
 router.delete("/:boardId/column/:id", verifyToken, deleteColumn);
+router.put("/reorder-columns",verifyToken,reorderColumn)
 
 export default router;

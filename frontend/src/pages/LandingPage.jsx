@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import Features from "../components/Features";
 import Testimonials from "../components/Testimonials";
-import { Menu, X } from "lucide-react";
+import { Menu, X, CircleCheckBig } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import image from "../assets/heroImage.jpg";
 import Footer from "../components/Footer";
@@ -25,7 +25,12 @@ const LandingPage = () => {
   return (
     <div>
       <div className="w-full flex justify-between px-10 py-3 border-b border-gray-300">
-        <h1 className="font-bold text-xl my-auto">TaskFlow</h1>
+        <div className="flex gap-4">
+          <div className="bg-linear-to-bl from-blue-700 to-blue-200 px-2 py-1 flex justify-center items-center rounded-md">
+            <CircleCheckBig size={20} className="text-white text-center" />
+          </div>
+          <h1 className="font-bold text-xl my-auto">TaskFlow</h1>
+        </div>
 
         <div className="hidden md:flex gap-5 items-center">
           <p

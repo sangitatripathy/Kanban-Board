@@ -61,18 +61,22 @@ export const updateColumn = async (req, res) => {
       column.title = title;
     }
 
-    if(newIndex !== undefined){
-      const columns = await Column.find({boardId: column.boardId}).sort({position: 1});
-      const filtered = columns.filter(col => col._id.toString() !== id);
+    if (newIndex !== undefined) {
+      const columns = await Column.find({ boardId: column.boardId }).sort({
+        position: 1,
+      });
+      const filtered = columns.filter((col) => col._id.toString() !== id);
       filtered.splice(newIndex, 0, column);
-      for(let i=0; i<filtered.length; i++){
+      for (let i = 0; i < filtered.length; i++) {
         await Column.findByIdAndUpdate(filtered[i]._id, {
           position: i,
-        })
+        });
       }
     }
     const updatedColumn = await column.save();
-    res.status(200).json({message:"Column updated successfully",updatedColumn});
+    res
+      .status(200)
+      .json({ message: "Column updated successfully", updatedColumn });
   } catch (error) {
     res
       .status(500)
@@ -105,6 +109,30 @@ export const deleteColumn = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Failed to delete column",
+      error: error.message,
+    });
+  }
+};
+
+export const reorderColumn = async (req, res) => {
+  try {
+    const {columns} = req.body;
+
+    if(!columns || !Array.isArray(columns)){
+      return res.status(400).json({ message: "Invalid columns data" });
+    }
+
+    const bulkOps = columns.map((col)=>({
+      updateOne:{
+        filter: {_id:col._id},
+        update:{position:col.position},
+      }
+    }))
+    await Column.bulkWrite(bulkOps)
+    res.status(200).json({ message: "Columns reordered successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to reorder columns",
       error: error.message,
     });
   }

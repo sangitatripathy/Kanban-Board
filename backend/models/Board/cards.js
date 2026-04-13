@@ -29,6 +29,12 @@ const CardSchema = new mongoose.Schema(
       ref: "Column",
       required: true,
     },
+    assignees:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     position: Number,
     isArchived: { type: Boolean, default: false },
     startDate: { type: Date },
