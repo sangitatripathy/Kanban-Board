@@ -8,7 +8,7 @@ import {
 } from "@dnd-kit/sortable";
 import AddColumn from "./AddColumn";
 
-export default function SortableColumn({ column, onAddCard }) {
+export default function SortableColumn({ column, onAddCard, onCardClick }) {
   const {
     attributes,
     listeners,
@@ -48,7 +48,11 @@ export default function SortableColumn({ column, onAddCard }) {
       >
         <div className="flex flex-col gap-3 mb-3">
           {(column.cards || []).map((card) => (
-            <CardItem key={card._id} card={{ ...card, columnId: column._id }} />
+            <CardItem
+              key={card._id}
+              card={{ ...card, columnId: column._id }}
+              onClick={onCardClick}
+            />
           ))}
         </div>
       </SortableContext>

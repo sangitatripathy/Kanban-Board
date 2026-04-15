@@ -3,7 +3,7 @@ import { Archive } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const CardItem = ({ card }) => {
+const CardItem = ({ card, onClick }) => {
   const {
     attributes,
     listeners,
@@ -18,8 +18,10 @@ const CardItem = ({ card }) => {
       columnId: card.columnId,
       card,
     },
+    activationConstraint: {
+      distance: 5,
+    },
   });
-
   const style = {
     transform:
       transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
@@ -38,9 +40,14 @@ const CardItem = ({ card }) => {
       style={style}
       {...attributes}
       {...listeners}
-      className={`group bg-white rounded-lg px-3 py-2 relative cursor-grab shadow-sm hover:shadow-md transition ${
+      className={`group bg-white rounded-lg px-3 py-2 relative cursor-pointer shadow-sm hover:shadow-md transition ${
         isDragging ? "opacity-40 scale-95" : ""
       }`}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (isDragging) return;
+        onClick(card);
+      }}
     >
       {/* Top actions */}
       <div className="flex justify-end opacity-0 group-hover:opacity-100 transition">

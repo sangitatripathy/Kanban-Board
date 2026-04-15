@@ -7,7 +7,12 @@ const labelSchema = new mongoose.Schema({
 
 const checklistItemSchema = new mongoose.Schema({
   text: { type: String, required: true },
-  isCompleted: { type: Boolean, default: false }
+  items: [
+    {
+      text: { type: String, required: true },
+      completed: { type: Boolean, default: false },
+    },
+  ],
 });
 
 const CardSchema = new mongoose.Schema(
@@ -29,7 +34,7 @@ const CardSchema = new mongoose.Schema(
       ref: "Column",
       required: true,
     },
-    assignees:[
+    assignees: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

@@ -14,7 +14,8 @@ import inviteRoute from "./Routes/invite.js";
 import boardRoute from "./Routes/boardRoute.js";
 import columnRoute from "./Routes/columnRoute.js";
 import cardRoute from "./Routes/cardRoute.js";
-import memberRoute from './Routes/members.js'
+import memberRoute from './Routes/members.js';
+import cardActionRoute from './Routes/Board/index.js'
 
 import { createClient } from "redis";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -70,6 +71,7 @@ app.use("/api/invite",inviteRoute);
 app.use("/api/org",boardRoute);
 app.use("/api/board",columnRoute);
 app.use("/api/column",cardRoute);
+app.use("/api/card",cardActionRoute)
 app.use("/api/member",memberRoute);
 app.use("/uploads", express.static("uploads"));
 

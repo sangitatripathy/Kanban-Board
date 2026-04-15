@@ -3,7 +3,14 @@ import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { ListFilter, Users, EllipsisVertical } from "lucide-react";
 
-import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
+import {
+  DndContext,
+  closestCenter,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
@@ -11,12 +18,15 @@ import {
 } from "@dnd-kit/sortable";
 import SortableColumn from "@/components/SortableColumn";
 import AddColumn from "@/components/AddColumn";
+import CardItem from "@/components/CardItem";
+import CardModal from "@/components/Modal/CardModal";
 import { getRequest, putRequest, postRequest } from "@/lib/axios";
 
 const Board = () => {
   const [columns, setColumns] = useState([]);
   const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
   const location = useLocation();
   const { board } = location.state || {};
 
@@ -28,6 +38,14 @@ const Board = () => {
   useEffect(() => {
     fetchColumns();
   }, []);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+  );
 
   const handleDragStart = (event) => {
     const { active } = event;
@@ -172,12 +190,6 @@ const Board = () => {
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
 
-  const CardPreview = ({ card }) => (
-    <div className="bg-white rounded-lg px-3 py-2 shadow-md">
-      <h3 className="text-[13px]">{card.cardName}</h3>
-    </div>
-  );
-
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
@@ -225,14 +237,15 @@ const Board = () => {
       </div>
       <div className="flex-1 px-4 mt-6 overflow-x-auto overflow-y-hidden">
         <DndContext
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
           <DragOverlay>
             {activeCard ?
-              <div className="w-64 opacity-90">
-                <CardPreview card={activeCard} />
+              <div className="w-72">
+                <CardItem card={activeCard} onClick={() => {}} />
               </div>
             : null}
           </DragOverlay>
@@ -246,6 +259,7 @@ const Board = () => {
                   key={col._id}
                   column={col}
                   onAddCard={handleAddCard}
+                  onCardClick={(card) => setSelectedCard(card)}
                 />
               ))}
               <AddColumn onAdd={handleAddColumn} message={"Add another list"} />
@@ -253,6 +267,9 @@ const Board = () => {
           </SortableContext>
         </DndContext>
       </div>
+      {selectedCard && (
+        <CardModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+      )}
     </div>
   );
 };
