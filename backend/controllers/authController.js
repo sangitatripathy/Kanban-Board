@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../utility/sendEmail.js";
 import crypto from "crypto";
 import { redisClient } from "../server.js";
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -18,8 +20,15 @@ export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     const file = req.file;
     let imageUrl = null;
+
     if (file) {
-      imageUrl = `/uploads/${file.filename}`;
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "users",
+      });
+
+      imageUrl = result.secure_url;
+
+      fs.unlinkSync(file.path);
     }
 
     const rateLimitKey = `register-rate-limit:${req.ip}:${email}`;
@@ -265,6 +274,8 @@ export const getCurrentUser = async (req, res) => {
       res.status(200).json(user);
     }
   } catch (error) {
-    res.status(500).json({ message: "Error fetching user", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching user", error: error.message });
   }
 };

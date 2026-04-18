@@ -4,7 +4,7 @@ import { updateDates, setReminder, clearDates } from "../../controllers/Board/in
 
 const router = express.Router();
 
-router.get("/dates",verifyToken,updateDates);
+router.put("/dates",verifyToken,updateDates);
 router.put("/reminder", verifyToken, setReminder);
 router.delete("/dates", verifyToken, clearDates);
 

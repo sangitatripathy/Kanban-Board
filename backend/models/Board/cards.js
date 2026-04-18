@@ -6,7 +6,7 @@ const labelSchema = new mongoose.Schema({
 });
 
 const checklistItemSchema = new mongoose.Schema({
-  text: { type: String, required: true },
+  title: { type: String, required: true },
   items: [
     {
       text: { type: String, required: true },
