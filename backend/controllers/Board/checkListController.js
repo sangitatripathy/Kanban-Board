@@ -5,9 +5,13 @@ const addChecklist = async (req, res) => {
     const { title } = req.body;
     const { cardId } = req.params;
 
-    const updatedCard = await Card.findByIdAndUpdate(cardId, {
-      $push: { checklist: { title, items: [] } },
-    });
+    const updatedCard = await Card.findByIdAndUpdate(
+      cardId,
+      {
+        $push: { checklist: { title, items: [] } },
+      },
+      { new: true },
+    );
 
     if (!updatedCard) {
       return res.status(404).json({ message: "Card not found" });
@@ -51,7 +55,7 @@ const updateChecklist = async (req, res) => {
   }
 };
 
-const deleteChecklist = async () => {
+const deleteChecklist = async (req,res) => {
   try {
     const { cardId, checklistId } = req.params;
     const updatedCard = await Card.findByIdAndUpdate(
@@ -76,7 +80,7 @@ const deleteChecklist = async () => {
   }
 };
 
-const addItem = async () => {
+const addItem = async (req,res) => {
   try {
     const { cardId, checklistId } = req.params;
     const { text } = req.body;
@@ -98,7 +102,7 @@ const addItem = async () => {
       return res.status(404).json({ message: "Checklist not found" });
     }
 
-    res.json(updatedCard);
+    res.json(updatedCard.checklist);
   } catch (error) {
     return res.status(500).json({
       message: "Error adding item to checklist",
@@ -107,7 +111,7 @@ const addItem = async () => {
   }
 };
 
-const updateItem = async () => {
+const updateItem = async (req,res) => {
   try {
     const { cardId, checklistId, itemId } = req.params;
     const { text, completed } = req.body;
@@ -146,7 +150,7 @@ const updateItem = async () => {
   }
 };
 
-const deleteItem = async () => {
+const deleteItem = async (req,res) => {
   try {
     const { cardId, checklistId, itemId } = req.params;
 

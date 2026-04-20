@@ -1,6 +1,6 @@
 import Card from "../../models/Board/cards.js";
 
-const updateDates = async () => {
+const updateDates = async (req,res) => {
   try {
     const { cardId } = req.params;
     const { startDate, dueDate } = req.body;
@@ -36,7 +36,7 @@ const updateDates = async () => {
   }
 };
 
-const setReminder = async () => {
+const setReminder = async (req,res) => {
   try {
     const { cardId } = req.params;
     const { reminder } = req.body;
@@ -64,7 +64,7 @@ const setReminder = async () => {
   }
 };
 
-const clearDates = async () => {
+const clearDates = async (req,res) => {
   try {
     const { cardId } = req.params;
 
