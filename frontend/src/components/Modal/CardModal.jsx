@@ -14,6 +14,7 @@ import Checklist from "../Board/Checklist";
 import Calendar from "../Board/Calendar";
 import Attachment from "../Board/Attachment";
 import Members from "../Board/Members";
+import { putRequest } from "@/lib/axios";
 
 const CardModal = ({
   card,
@@ -21,10 +22,25 @@ const CardModal = ({
   board,
   updateBoardLabels,
   assignLabels,
+  dateSave,
+  handleChecklist,
 }) => {
   if (!card) return null;
   const [activeDropdown, setActiveDropdown] = useState(null);
-  console.log(card);
+  const [activeInput, setActiveInput] = useState(null);
+  const [itemText, setItemText] = useState("");
+
+  const handleAddItem = async(checklistId) =>{
+    try{
+      const res = await putRequest(`/card/${card._id}/checklist/${checklistId}/item`,{
+        itemText
+      })
+      console.log(res)
+    }catch(error){
+      console.error(error.message)
+    }
+  }
+
   return (
     <div
       className="fixed inset-0 bg-black/30 flex justify-center z-50"
@@ -48,7 +64,7 @@ const CardModal = ({
 
         <hr className="w-full" />
 
-        <div className="flex items-stretch h-full">
+        <div className="flex h-full overflow-hidden">
           {/* left div */}
           <div className="flex flex-col gap-3 p-6 w-[50%] border-r border-gray-300 overflow-y-auto">
             <h1 className="text-lg font-semibold text-gray-800">
@@ -94,7 +110,11 @@ const CardModal = ({
               </button>
 
               {activeDropdown == "checklist" && (
-                <Checklist onClose={() => setActiveDropdown(null)} />
+                <Checklist
+                  cardId={card._id}
+                  onClose={() => setActiveDropdown(null)}
+                  handleChecklist={handleChecklist}
+                />
               )}
               {activeDropdown == "members" && (
                 <Members onClose={() => setActiveDropdown(null)} />
@@ -103,7 +123,11 @@ const CardModal = ({
                 <Attachment onClose={() => setActiveDropdown(null)} />
               )}
               {activeDropdown === "date" && (
-                <Calendar onClose={() => setActiveDropdown(null)} />
+                <Calendar
+                  onClose={() => setActiveDropdown(null)}
+                  cardId={card._id}
+                  dateSave={dateSave}
+                />
               )}
               {activeDropdown == "label" && (
                 <Label
@@ -115,19 +139,46 @@ const CardModal = ({
                 />
               )}
             </div>
-            {card.labels?.length > 0 && (
-              <div className="flex gap-2 mt-2 flex-wrap">
-                {card.labels.map((label) => (
-                  <div
-                    key={label._id}
-                    className={`h-6 px-2 rounded text-white text-xs flex items-center ${label.color}`}
-                    style={{ backgroundColor: label.color }}
-                  >
-                    {label.name}
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="flex items-center gap-4 mt-2 flex-wrap">
+              {/* LABELS */}
+              {card.labels?.length > 0 && (
+                <div className="flex gap-2 flex-wrap">
+                  {card.labels.map((label) => (
+                    <div
+                      key={label._id}
+                      className={`h-6 px-2 rounded text-white text-xs flex items-center ${label.color}`}
+                      style={{ backgroundColor: label.color }}
+                    >
+                      {label.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {card.dueDate && (
+                <div className="flex gap-2 text-xs text-gray-700 bg-gray-200 px-2 py-1 rounded">
+                  <span>
+                    Due:{" "}
+                    {(() => {
+                      const date = new Date(card.dueDate);
+
+                      const hasTime =
+                        date.getHours() !== 0 || date.getMinutes() !== 0;
+
+                      return date.toLocaleString("en-US", {
+                        month: "short", // Sep
+                        day: "numeric", // 12
+                        year: "numeric", // 2026
+                        ...(hasTime && {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        }),
+                      });
+                    })()}
+                  </span>
+                </div>
+              )}
+            </div>
             <div className="flex flex-col gap-3">
               <div className="flex gap-2 mt-4">
                 <RectangleEllipsis />
@@ -138,9 +189,84 @@ const CardModal = ({
                 placeholder="Add a more detailed description..."
               ></textarea>
             </div>
+
+            <div className="mt-4 flex flex-col gap-4">
+              {card.checklist?.map((list) => {
+                const completed = list.items.filter((i) => i.completed).length;
+                const total = list.items.length;
+                const percent = total === 0 ? 0 : (completed / total) * 100;
+
+                return (
+                  <div key={list._id} className="p-2 rounded-md">
+                    <h3 className="text-sm mb-1 font-medium">{list.title}</h3>
+
+                    <div className="mb-2 flex gap-1 items-center">
+                      <span className="text-xs text-gray-500 whitespace-nowrap">
+                        {completed} / {total}
+                      </span>
+
+                      <div className="w-full bg-gray-300 rounded-full h-2">
+                        <div
+                          className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {list.items.map((item) => (
+                        <div key={item._id} className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={item.completed}
+                            onChange={() => {}}
+                          />
+                          <p
+                            className={`text-sm ${item.completed ? "line-through" : ""}`}
+                          >
+                            {item.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    {activeInput === list._id ?
+                      <div className="mt-2 flex flex-col gap-2">
+                        <input
+                          type="text"
+                          value={itemText}
+                          onChange={(e) => setItemText(e.target.value)}
+                          className="p-1 text-sm border rounded"
+                        />
+
+                        <div className="flex gap-2">
+                          <button onClick={()=>handleAddItem(list._id)} className="bg-blue-500 text-white px-2 py-1 rounded text-sm">
+                            Add
+                          </button>
+                          <button
+                            onClick={() => {
+                              
+                              setActiveInput(null);
+                              setItemText("");
+                            }}
+                            className="text-gray-600 text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    : <button
+                        onClick={() => setActiveInput(list._id)}
+                        className="mt-2 text-sm bg-gray-200 px-2 py-1 rounded"
+                      >
+                        Add an item
+                      </button>
+                    }
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Right Div */}
           <div className="p-6 bg-gray-100 w-[50%]">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">

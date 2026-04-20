@@ -207,6 +207,43 @@ const Board = () => {
       prev && prev._id === cardId ? { ...prev, labels } : prev,
     );
   };
+
+  const handleUpdateCardDates = (cardId, dates) => {
+    setColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        cards: col.cards.map((card) =>
+          card._id === cardId ?
+            {
+              ...card,
+              startDate: dates.startDate,
+              dueDate: dates.dueDate,
+              dueTime: dates.dueTime,
+            }
+          : card,
+        ),
+      })),
+    );
+    setSelectedCard((prev) =>
+      prev && prev._id === cardId ? { ...prev, ...dates } : prev,
+    );
+  };
+
+  const handleUpdateChecklist = (cardId, checklist) => {
+    setColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        cards: col.cards.map((card) =>
+          card._id === cardId ? { ...card, checklist } : card,
+        ),
+      })),
+    );
+
+    setSelectedCard((prev) =>
+      prev && prev._id === cardId ? { ...prev, checklist } : prev,
+    );
+  };
+
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
@@ -295,6 +332,8 @@ const Board = () => {
           board={boardData}
           updateBoardLabels={handleUpdateBoardLabels}
           assignLabels={handleAssignLabels}
+          dateSave={handleUpdateCardDates}
+          handleChecklist ={handleUpdateChecklist}
         />
       )}
     </div>

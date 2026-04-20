@@ -1,5 +1,5 @@
 import React from "react";
-import { Archive } from "lucide-react";
+import { Archive, Clock } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -34,6 +34,21 @@ const CardItem = ({ card, onClick }) => {
     High: "bg-red-100 border-red-400 text-red-500",
   };
 
+  const formattedDueDate =
+    card.dueDate ?
+      new Date(card.dueDate).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+      })
+    : null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const due = card.dueDate ? new Date(card.dueDate) : null;
+  if (due) due.setHours(0, 0, 0, 0);
+
+  const isOverdue = due && due < today;
+
   return (
     <div
       ref={setNodeRef}
@@ -58,30 +73,46 @@ const CardItem = ({ card, onClick }) => {
         />
       </div>
 
-      {/* Title */}
       <h3 className="text-[13px] font-normal text-gray-800 leading-snug">
         {card.cardName}
       </h3>
 
-      {card.labels?.length > 0 && (
-        <div className="flex gap-1 flex-wrap mt-2">
-          {card.labels.map((label) => (
+      <div className="flex items-center gap-2 mt-2">
+        <div className="flex gap-1 flex-wrap">
+          {card.labels?.map((label) => (
             <div
               key={label._id}
-              className={`h-3 p-2 text-white text-xs flex items-center rounded ${label.color}`}
+              className={`h-4 p-2 text-white text-xs flex items-center rounded ${label.color}`}
               style={{ backgroundColor: label.color }}
-            >{label.name}</div>
+            >
+              {label.name}
+            </div>
           ))}
         </div>
-      )}
-
-      {/* Footer */}
-      <div className="flex items-center justify-between mt-2">
-        <span
-          className={`${priorityColor[card.priority]} text-[11px] px-2 py-0.5 rounded font-medium`}
-        >
-          {card.priority}
-        </span>
+      </div>
+      <div className="flex gap-2 mt-2">
+        {formattedDueDate && (
+          <div
+            className={`flex w-18 items-center gap-1 text-[11px] px-2 py-0.5 rounded ${
+              isOverdue ?
+                "bg-red-100 text-red-600"
+              : "bg-gray-100 text-gray-600"
+            }`}
+          >
+            <Clock
+              size={12}
+              className={isOverdue ? "text-red-600" : "text-gray-600"}
+            />
+            <span>{formattedDueDate}</span>
+          </div>
+        )}
+        <div className="flex items-center justify-between">
+          <span
+            className={`${priorityColor[card.priority]} text-[11px] px-2 py-0.5 rounded font-medium`}
+          >
+            {card.priority}
+          </span>
+        </div>
       </div>
     </div>
   );
