@@ -1,10 +1,5 @@
 import mongoose from "mongoose";
 
-const labelSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  color: { type: String, required: true },
-});
-
 const checklistItemSchema = new mongoose.Schema({
   title: { type: String, required: true },
   items: [
@@ -50,7 +45,9 @@ const CardSchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
-    labels: [labelSchema],
+    labels: [{
+      type: mongoose.Schema.Types.ObjectId
+    }],
     checklist: [checklistItemSchema],
   },
   { timestamps: true },

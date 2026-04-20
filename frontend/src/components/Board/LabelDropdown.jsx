@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SquarePen, X, ChevronLeft } from "lucide-react";
-
-const colors = [
-  "bg-red-500",
-  "bg-green-500",
-  "bg-blue-500",
-  "bg-yellow-500",
-  "bg-purple-500",
-  "bg-pink-500",
-  "bg-orange-500",
-  "bg-gray-500",
-];
+import { putRequest } from "@/lib/axios";
 
 const trelloColors = [
   "#7BC8A4",
@@ -41,20 +31,82 @@ const trelloColors = [
   "#2D6CC4",
   "#2F7F99",
   "#5A7F2B",
-  "#A64D79",
-  "#6B6F75",
-  "#1E4FA1",
-  "#276C80",
-  "#4E6E22",
-  "#8E3E6D",
-  "#5C6066",
-  "#3A3F45",
+  "bg-gray-500",
+  "bg-orange-500",
+  "bg-pink-500",
+  "bg-purple-500",
+  "bg-yellow-500",
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-red-500",
 ];
 
-const Label = ({ onClose }) => {
+const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
   const [view, setView] = useState("list");
   const [selectedColor, setSelectedColor] = useState(null);
   const [title, setTitle] = useState("");
+  const [editingLabel, setEditingLabel] = useState(null);
+
+  const existingLabel = card?.labels || [];
+  const boardLabels = board?.labels || [];
+
+  const selected = boardLabels.filter((bl) =>
+    existingLabel.some((l) => l._id === bl._id),
+  );
+
+  const remaining = boardLabels.filter(
+    (bl) => !existingLabel.some((l) => l._id === bl._id),
+  );
+
+  const allLabels = [...selected, ...remaining];
+
+  const handleSaveLabel = async () => {
+    try {
+      let res;
+
+      if (view === "edit") {
+        res = await putRequest(
+          `/card/${board._id}/labels/${editingLabel._id}`,
+          {
+            color: selectedColor,
+            name: title,
+          },
+        );
+      } else {
+        res = await putRequest(`/card/${board._id}/labels/`, {
+          color: selectedColor,
+          name: title,
+        });
+      }
+      console.log(res);
+      if (res) {
+        updateLabels(res);
+        setTitle("");
+        setEditingLabel(null);
+        setView("list");
+      }
+    } catch (error) {
+      console.error("Error saving label:", error);
+    }
+  };
+
+  const handleToggleLabel = async (item) => {
+    const isSelected = existingLabel.some((l) => l._id === item._id);
+
+    let updatedLabels;
+
+    if (isSelected) {
+      updatedLabels = existingLabel.filter((l) => l._id !== item._id);
+    } else {
+      updatedLabels = [...existingLabel, item];
+    }
+
+    await putRequest(`/card/${card._id}/labels`, {
+      labels: updatedLabels.map((l) => l._id),
+    });
+
+    assignLabels(card._id, updatedLabels);
+  };
 
   return (
     <div className="absolute top-8 right-0 bg-white shadow-lg rounded-lg z-50 w-64">
@@ -71,14 +123,27 @@ const Label = ({ onClose }) => {
           <hr />
           <div className="p-2">
             <div className="flex flex-col gap-2">
-              {colors.map((color, i) => (
+              {allLabels.map((item, i) => (
                 <div key={i} className="flex gap-2">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={existingLabel.some((l) => l._id === item._id)}
+                    onChange={() => handleToggleLabel(item)}
+                  />
                   <div
-                    className={`h-6 w-80 rounded cursor-pointer ${color}`}
-                  ></div>
+                    className={`h-6 w-80 rounded cursor-pointer flex items-center justify-center ${item.color}`}
+                    style={{ backgroundColor: item.color }}
+                  >
+                    {" "}
+                    <p className="text-white text-xs">{item?.name}</p>
+                  </div>
                   <SquarePen
-                    onClick={() => setView("edit")}
+                    onClick={() => {
+                      setView("edit");
+                      setSelectedColor(item.color);
+                      setTitle(item.name || "");
+                      setEditingLabel(item);
+                    }}
                     size={20}
                     className="text-gray-600"
                   />
@@ -115,7 +180,7 @@ const Label = ({ onClose }) => {
           <div className="h-18 bg-gray-200 flex justify-center items-center">
             <div
               style={{ backgroundColor: selectedColor }}
-              className={`h-8 w-50 rounded`}
+              className={`h-8 w-50 rounded ${selectedColor}`}
             ></div>
           </div>
 
@@ -124,7 +189,9 @@ const Label = ({ onClose }) => {
               <label className="text-[13px] mb-1">Title</label>
               <input
                 type="text"
-                className="border border-gray-500 p-1 rounded-md outline-none"
+                value={title}
+                className="border border-gray-500 p-1 rounded-md outline-none text-sm"
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <div className="mt-2">
@@ -134,7 +201,7 @@ const Label = ({ onClose }) => {
                   <div
                     key={index}
                     onClick={() => setSelectedColor(color)}
-                    className="h-8 w-8 rounded flex items-center justify-center cursor-pointer relative"
+                    className={`h-8 w-8 rounded flex items-center justify-center cursor-pointer relative ${color}`}
                     style={{ backgroundColor: color }}
                   >
                     {selectedColor === color && (
@@ -144,7 +211,10 @@ const Label = ({ onClose }) => {
                 ))}
               </div>
             </div>
-            <button className=" text-[13px] bg-blue-500 hover:bg-blue-600 w-full text-white mt-3 p-1 rounded-md">
+            <button
+              onClick={handleSaveLabel}
+              className=" text-[13px] bg-blue-500 hover:bg-blue-600 w-full text-white mt-3 p-1 rounded-md"
+            >
               {view === "edit" ? "Update" : "Create"}
             </button>
           </div>

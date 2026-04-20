@@ -15,10 +15,16 @@ import Calendar from "../Board/Calendar";
 import Attachment from "../Board/Attachment";
 import Members from "../Board/Members";
 
-const CardModal = ({ card, onClose }) => {
+const CardModal = ({
+  card,
+  onClose,
+  board,
+  updateBoardLabels,
+  assignLabels,
+}) => {
   if (!card) return null;
   const [activeDropdown, setActiveDropdown] = useState(null);
-
+  console.log(card);
   return (
     <div
       className="fixed inset-0 bg-black/30 flex justify-center z-50"
@@ -39,7 +45,9 @@ const CardModal = ({ card, onClose }) => {
             </button>
           </div>
         </div>
+
         <hr className="w-full" />
+
         <div className="flex items-stretch h-full">
           {/* left div */}
           <div className="flex flex-col gap-3 p-6 w-[50%] border-r border-gray-300 overflow-y-auto">
@@ -98,9 +106,28 @@ const CardModal = ({ card, onClose }) => {
                 <Calendar onClose={() => setActiveDropdown(null)} />
               )}
               {activeDropdown == "label" && (
-                <Label onClose={() => setActiveDropdown(null)} />
+                <Label
+                  onClose={() => setActiveDropdown(null)}
+                  updateBoardLabels={updateBoardLabels}
+                  assignLabels={assignLabels}
+                  card={card}
+                  board={board}
+                />
               )}
             </div>
+            {card.labels?.length > 0 && (
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {card.labels.map((label) => (
+                  <div
+                    key={label._id}
+                    className={`h-6 px-2 rounded text-white text-xs flex items-center ${label.color}`}
+                    style={{ backgroundColor: label.color }}
+                  >
+                    {label.name}
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="flex flex-col gap-3">
               <div className="flex gap-2 mt-4">
                 <RectangleEllipsis />

@@ -28,10 +28,10 @@ const Board = () => {
   const [activeCard, setActiveCard] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
   const location = useLocation();
-  const { board } = location.state || {};
+  const [boardData, setBoardData] = useState(location.state?.board);
 
   const fetchColumns = async () => {
-    const res = await getRequest(`/org/board-details/${board?._id}`);
+    const res = await getRequest(`/org/board-details/${boardData?._id}`);
     setColumns(res.columns);
   };
 
@@ -186,7 +186,28 @@ const Board = () => {
     });
   };
 
-  const members = board?.members || [];
+  const handleUpdateBoardLabels = (updatedLabels) => {
+    setBoardData((prev) => ({
+      ...prev,
+      labels: updatedLabels,
+    }));
+  };
+
+  const handleAssignLabels = (cardId, labels) => {
+    setColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        cards: col.cards.map((card) =>
+          card._id === cardId ? { ...card, labels } : card,
+        ),
+      })),
+    );
+
+    setSelectedCard((prev) =>
+      prev && prev._id === cardId ? { ...prev, labels } : prev,
+    );
+  };
+  const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
 
@@ -195,7 +216,7 @@ const Board = () => {
       <Navbar variant="board" hideDrawer={true} />
       <div className="px-4 py-2 flex justify-between items-center bg-linear-to-r from-purple-800 to-purple-500">
         <div>
-          <h1 className="font-semibold text-white">{board?.boardName}</h1>
+          <h1 className="font-semibold text-white">{boardData?.boardName}</h1>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center">
@@ -268,7 +289,13 @@ const Board = () => {
         </DndContext>
       </div>
       {selectedCard && (
-        <CardModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+        <CardModal
+          card={selectedCard}
+          onClose={() => setSelectedCard(null)}
+          board={boardData}
+          updateBoardLabels={handleUpdateBoardLabels}
+          assignLabels={handleAssignLabels}
+        />
       )}
     </div>
   );

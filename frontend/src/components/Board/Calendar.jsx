@@ -31,7 +31,7 @@ const Calendar = ({ onClose }) => {
         <div>
           <label className="text-xs">Start Date</label>
           <div className="flex gap-2">
-            <input type="checkbox" />
+            <input type="checkbox" value={startDate} />
             <input type="date" className="border p-0.5 rounded-md text-sm"/>
           </div>
         </div>

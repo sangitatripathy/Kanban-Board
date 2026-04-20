@@ -63,6 +63,18 @@ const CardItem = ({ card, onClick }) => {
         {card.cardName}
       </h3>
 
+      {card.labels?.length > 0 && (
+        <div className="flex gap-1 flex-wrap mt-2">
+          {card.labels.map((label) => (
+            <div
+              key={label._id}
+              className={`h-3 p-2 text-white text-xs flex items-center rounded ${label.color}`}
+              style={{ backgroundColor: label.color }}
+            >{label.name}</div>
+          ))}
+        </div>
+      )}
+
       {/* Footer */}
       <div className="flex items-center justify-between mt-2">
         <span

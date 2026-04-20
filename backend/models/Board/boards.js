@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+const labelSchema = new mongoose.Schema({
+  name: { type: String },
+  color: { type: String, required: true },
+});
+
 const BoardSchema = new mongoose.Schema(
   {
     boardName: { type: String, required: true },
@@ -21,6 +26,7 @@ const BoardSchema = new mongoose.Schema(
     },
     boardDescription: { type: String },
     isArchived: { type: Boolean, default: false },
+    labels:[labelSchema]
   },
   { timestamps: true },
 );

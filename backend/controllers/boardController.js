@@ -50,13 +50,21 @@ export const getBoardDetails = async (req, res) => {
       };
     });
 
-    cards.forEach((card)=>{
-      const colId = card.columnId.toString()
-      if(columnMap[colId]){
-        columnMap[colId].cards.push(card)
+    cards.forEach((card) => {
+      const colId = card.columnId.toString();
+
+      if (columnMap[colId]) {
+        const cardLabels = board.labels.filter((label) =>
+          card.labels.includes(label._id),
+        );
+
+        columnMap[colId].cards.push({
+          ...card.toObject(),
+          labels: cardLabels,
+        });
       }
-    })
-    const columnsWithCards = Object.values(columnMap)
+    });
+    const columnsWithCards = Object.values(columnMap);
     res.status(200).json({
       ...board.toObject(),
       columns: columnsWithCards,

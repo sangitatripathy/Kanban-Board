@@ -2,9 +2,9 @@ import express from "express";
 import {verifyToken} from "../../middleware/authMiddleware.js";
 import { createLabel, getLabels, editLabel } from "../../controllers/Board/index.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.post("/",verifyToken,createLabel)
+router.put("/",verifyToken,createLabel)
 router.get("/",verifyToken,getLabels)
 router.put("/:labelId",verifyToken,editLabel)
 
