@@ -35,7 +35,9 @@ const CardModal = ({
       const res = await putRequest(`/card/${card._id}/checklist/${checklistId}/item`,{
         itemText
       })
-      console.log(res)
+      handleChecklist(card._id,res);
+      setItemText("");
+      setActiveInput(null);
     }catch(error){
       console.error(error.message)
     }
