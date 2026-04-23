@@ -247,7 +247,7 @@ const Board = () => {
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
-  console.log(columns)
+
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />

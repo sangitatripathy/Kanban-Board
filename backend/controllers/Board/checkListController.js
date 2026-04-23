@@ -83,7 +83,7 @@ const deleteChecklist = async (req,res) => {
 const addItem = async (req,res) => {
   try {
     const { cardId, checklistId } = req.params;
-    const { text } = req.body;
+    const { itemText } = req.body;
 
     const updatedCard = await Card.findOneAndUpdate(
       {
@@ -92,7 +92,7 @@ const addItem = async (req,res) => {
       },
       {
         $push: {
-          "checklist.$.items": { text },
+          "checklist.$.items": { text:itemText },
         },
       },
       { new: true },
@@ -111,7 +111,7 @@ const addItem = async (req,res) => {
   }
 };
 
-const updateItem = async (req,res) => {
+const updateItem = async (req, res) => {
   try {
     const { cardId, checklistId, itemId } = req.params;
     const { text, completed } = req.body;
@@ -126,24 +126,27 @@ const updateItem = async (req,res) => {
       updateFields["checklist.$[c].items.$[i].completed"] = completed;
     }
 
-    const updatedCard = await Card.findByIdAndUpdate(
-      cardId,
-      {
-        $set: updateFields,
-      },
-      {
-        arrayFilters: [{ "c._id": checklistId }, { "i._id": itemId }],
-        new: true,
-      },
-    );
-
-    if (!updatedCard) {
-      return res.status(404).json({ message: "Item not found" });
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({
+        message: "No valid fields to update",
+      });
     }
 
-    res.json(updatedCard);
+    const updatedCard = await Card.findByIdAndUpdate(
+      cardId,
+      { $set: updateFields },
+      {
+        arrayFilters: [
+          { "c._id": checklistId },
+          { "i._id": itemId },
+        ],
+        new: true,
+      }
+    );
+
+    res.json(updatedCard.checklist);
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Error updating item in checklist",
       error: error.message,
     });
@@ -171,7 +174,7 @@ const deleteItem = async (req,res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    res.json(updatedCard);
+    res.json(updatedCard.checklist);
   } catch (error) {
     return res
       .status(500)
