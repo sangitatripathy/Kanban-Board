@@ -84,7 +84,7 @@ const WorkSpace = () => {
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-6 mt-6">
-                {organization?.org?.map((org, index) => {
+                {organization?.organizations?.map((org, index) => {
                   const gradient = gradients[index % gradients.length];
 
                   return (

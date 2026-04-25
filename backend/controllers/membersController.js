@@ -27,3 +27,11 @@ export const getMembers = async (req, res) => {
       .json({ message: "Error getting members", error: error.message });
   }
 };
+
+export const removeMember = async (req,res) =>{
+
+}
+
+export const updateMemberRole = async (req,res) =>{
+  
+}

@@ -7,6 +7,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
 import connectDB from "./config/db.js";
+import connectCloudinary from "./config/cloudinary.js";
 
 import authRoute from "./routes/authRoute.js";
 import organisationRoute from "./Routes/organizationRoute.js";
@@ -16,7 +17,7 @@ import columnRoute from "./Routes/columnRoute.js";
 import cardRoute from "./Routes/cardRoute.js";
 import memberRoute from './Routes/members.js';
 import cardActionRoute from './Routes/Board/index.js'
-
+import adminAnalyticsRoute from "./Routes/analyticsroute.js"
 import { createClient } from "redis";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -43,6 +44,7 @@ app.use(cookieParser());
 
 /*connect to MongoDB*/
 connectDB();
+connectCloudinary();
 
 const redisUrl = process.env.REDIS_URL;
 
@@ -67,6 +69,7 @@ try {
 app.use("/api/auth", authRoute);
 app.use("/api/org",organisationRoute);
 app.use("/api/invite",inviteRoute);
+app.use("/api/analytics",adminAnalyticsRoute);
 
 app.use("/api/org",boardRoute);
 app.use("/api/board",columnRoute);

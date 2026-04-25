@@ -9,6 +9,6 @@ router.post("/",verifyToken,isAdmin,sendInvite)
 router.get("/verify/:token",verifyInvite)
 router.post("/accept",verifyToken,acceptInvite)
 router.get("/org/:orgId",verifyToken,getOrgInvites)
-router.delete("/:inviteId", verifyToken, cancelInvite);
+router.delete("/:inviteId", verifyToken, isAdmin, cancelInvite);
 
 export default router;

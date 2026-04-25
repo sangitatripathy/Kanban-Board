@@ -83,9 +83,9 @@ export const registerUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in prod
+      secure: process.env.NODE_ENV === "production", 
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, 
     });
 
     res.status(201).json({
@@ -160,7 +160,7 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // true in prod
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, 
     });
 
     res.status(200).json({
@@ -189,7 +189,6 @@ export const forgetpassword = async (req, res) => {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
-    console.log(user);
 
     if (!user) {
       return res

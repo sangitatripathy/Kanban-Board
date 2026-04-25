@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Memberships from "../models/memberships.js";
 import Invite from "../models/inivites.js";
 import Organisation from "../models/organisation.js";
+import User from "../models/user.js";
 import { sendEmail } from "../utility/sendEmail.js";
 
 export const sendInvite = async (req, res) => {
@@ -53,7 +54,7 @@ export const sendInvite = async (req, res) => {
       email: email,
       subject: "You're invited to join a workspace",
       html: `
-        <h2>You're invited to join ${org.orgName}</h2>
+        <h2>You're invited to join ${org.name}</h2>
         <p>Role: ${role}</p>
         <a href="${inviteLink}">Accept Invite</a>
         <p>This link expires in 24 hours</p>
@@ -125,17 +126,15 @@ export const acceptInvite = async (req, res) => {
 
     const user = await User.findById(req.user.id);
 
-    if (user.email !== invite.email) {
-      return res.status(403).json({
-        msg: "This invite was sent to another email",
-      });
+    if (!user) {
+      return res.status(401).json({ msg: "Login required" });
     }
 
     const existing = await Memberships.findOne({
       userId: user._id,
       orgId: invite.orgId,
     });
-
+    console.log(existing)
     if (existing) {
       return res.status(400).json({ msg: "Already member" });
     }

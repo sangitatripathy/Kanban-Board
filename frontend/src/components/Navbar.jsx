@@ -48,7 +48,7 @@ const Navbar = ({ toggleDrawer, variant = "default", hideDrawer = false }) => {
 
         {user?.imageUrl ?
           <img
-            src={`http://localhost:8000${user.imageUrl}`}
+            src={`${user.imageUrl}`}
             className="w-8 h-8 rounded-full object-cover"
           />
         : <div className="w-8 h-8 rounded-full bg-orange-600 flex justify-center items-center text-white">

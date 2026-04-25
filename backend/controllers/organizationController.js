@@ -33,19 +33,27 @@ export const createOrganization = async (req, res) => {
 export const getOrganization = async (req, res) => {
   try {
     const userId = req.user.id;
-  
-    const org = await Organisation.find({owner: new mongoose.Types.ObjectId(userId)})
-    
-    if(!org){
-      return res.status(404).json({message:"Organization doesn't exist"})
+
+    const memberships = await Memberships.find({
+      userId: new mongoose.Types.ObjectId(userId),
+    }).populate("orgId");
+
+    const organizations = memberships.map((m) => m.orgId);
+
+    if (!organizations.length) {
+      return res.status(404).json({
+        message: "No organizations found for this user",
+      });
     }
+
     return res.status(200).json({
-      org
-    })
+      organizations,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error getting organization", error: error.message });
+    res.status(500).json({
+      message: "Error getting organization",
+      error: error.message,
+    });
   }
 };
 

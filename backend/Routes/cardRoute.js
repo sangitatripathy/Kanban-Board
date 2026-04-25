@@ -1,5 +1,5 @@
 import express from "express";
-import {verifyToken} from "../middleware/authMiddleware.js";
+import {verifyToken} from "../middleware/authmiddleware.js";
 import {createCard, getCardById, updateCard, deleteCard, reorderCard} from "../controllers/cardController.js";
 
 const router = express.Router();
