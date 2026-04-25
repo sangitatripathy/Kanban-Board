@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 const createLabel = async (req, res) => {
   try {
     const { boardId } = req.params;
+    console.log(boardId)
     const { color, name } = req.body;
 
     const board = await Board.findByIdAndUpdate(

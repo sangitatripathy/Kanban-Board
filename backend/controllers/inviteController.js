@@ -134,7 +134,7 @@ export const acceptInvite = async (req, res) => {
       userId: user._id,
       orgId: invite.orgId,
     });
-    console.log(existing)
+
     if (existing) {
       return res.status(400).json({ msg: "Already member" });
     }

@@ -9,4 +9,5 @@ router.post("/:orgId/board",verifyToken,createBoard)
 router.get("/:orgId/boards",verifyToken,getBoard)
 router.get("/board-details/:boardId",verifyToken,getBoardDetails)
 
+
 export default router;

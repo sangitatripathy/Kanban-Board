@@ -7,6 +7,7 @@ import Cards from '../../models/Board/cards.js';
 
 const router = express.Router();
 
+router.use("/:boardId/labels",LabelsRoute);
 router.put("/:cardId/labels", async (req, res) => {
   try {
     const { cardId } = req.params;
@@ -30,7 +31,6 @@ router.put("/:cardId/labels", async (req, res) => {
     });
   }
 });
-router.use("/:boardId/labels",LabelsRoute);
 router.use("/:cardId/checklist",ChecklistRoute);
 router.use("/:cardId/attachments",attachmentRoute);
 router.use("/:cardId",CalendarRoute);

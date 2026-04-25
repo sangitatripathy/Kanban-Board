@@ -35,7 +35,7 @@ const BoardList = ({ boards = [], onCreateBoard }) => {
             return (
               <div
                 key={board._id}
-                onClick={() => navigate(`/board/${board._id}`,{state:{board}})}
+                onClick={() => navigate(`/board/${board._id}`)}
                 className="bg-white rounded-xl shadow-sm border hover:shadow-md transition cursor-pointer"
               >
                 <div

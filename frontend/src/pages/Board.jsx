@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { ListFilter, Users, EllipsisVertical } from "lucide-react";
+import { ListFilter, Users, EllipsisVertical, X } from "lucide-react";
 
 import {
   DndContext,
@@ -27,17 +27,19 @@ const Board = () => {
   const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
-  const location = useLocation();
-  const [boardData, setBoardData] = useState(location.state?.board);
-
-  const fetchColumns = async () => {
-    const res = await getRequest(`/org/board-details/${boardData?._id}`);
-    setColumns(res.columns);
-  };
+  const [boardData, setBoardData] = useState();
+  const [orgMembers, setOrgMembers] = useState([]);
+  const [showMembers, setShowMembers] = useState(false);
+  const { boardId } = useParams();
 
   useEffect(() => {
-    fetchColumns();
-  }, []);
+    const fetchBoard = async () => {
+      const res = await getRequest(`/org/board-details/${boardId}`);
+      setBoardData(res);
+      setColumns(res.columns);
+    };
+    fetchBoard();
+  }, [boardId]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -163,7 +165,7 @@ const Board = () => {
 
   const handleAddColumn = async (title) => {
     try {
-      const res = await postRequest(`/board/${board._id}/columns`, {
+      const res = await postRequest(`/board/${boardData._id}/columns`, {
         title,
       });
 
@@ -244,10 +246,16 @@ const Board = () => {
     );
   };
 
+  const getOrgMembers = async (orgId) => {
+    const res = await getRequest(`/member/${orgId}`);
+    setOrgMembers(res);
+    setShowMembers(true);
+  };
+
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
-
+  console.log(boardData);
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
@@ -284,7 +292,12 @@ const Board = () => {
             {" "}
             <ListFilter size={19} />
           </div>
-          <div className="flex gap-2 bg-gray-300 px-2 py-1 rounded-md">
+          <div
+            onClick={() => {
+              getOrgMembers(boardData.orgId);
+            }}
+            className="flex gap-2 bg-gray-300 px-2 py-1 rounded-md cursor-pointer"
+          >
             <Users size={19} />
             <p>Add Member</p>
           </div>
@@ -325,6 +338,40 @@ const Board = () => {
           </SortableContext>
         </DndContext>
       </div>
+      {showMembers && (
+        <div className="absolute right-10 top-30 bg-white shadow-lg rounded-lg w-80 p-3 z-50">
+          <div className="flex p-1.5 items-center justify-between rounded-lg border border-gray-300 mb-3">
+            <input className="outline-none text-sm" type="text" placeholder="Enter name" />
+            <X size={20} className="text-gray-600" onClick={() => setShowMembers(false)} />
+          </div>
+          <div className="flex flex-col gap-3">
+            {orgMembers.map((member) => (
+              <div key={member._id}>
+                <div className="flex gap-2">
+                  {member.imageUrl ?
+                    <img
+                      className="h-10 w-10 rounded-full object-cover"
+                      src={member.imageUrl}
+                      alt=""
+                    />
+                  : <p className="bg-gray-400 h-10 w-10 rounded-full flex items-center justify-center">
+                      {member.name[0]}
+                    </p>
+                  }
+
+                  <div className="flex flex-col">
+                    <p className="text-[13px] font-normal">{member.name}</p>
+                    <p className="text-xs text-gray-500 font-light">
+                      {member.email}
+                    </p>
+                  </div>
+                  
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {selectedCard && (
         <CardModal
           card={selectedCard}
@@ -333,7 +380,7 @@ const Board = () => {
           updateBoardLabels={handleUpdateBoardLabels}
           assignLabels={handleAssignLabels}
           dateSave={handleUpdateCardDates}
-          handleChecklist ={handleUpdateChecklist}
+          handleChecklist={handleUpdateChecklist}
         />
       )}
     </div>
