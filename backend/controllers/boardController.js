@@ -12,7 +12,12 @@ export const createBoard = async (req, res) => {
       boardName,
       orgId,
       createdBy: req.user.id,
-      members: [req.user.id],
+      members: [
+        {
+          user: req.user.id,
+          role: "admin",
+        },
+      ],
     });
     res.status(201).json(board);
   } catch (error) {
@@ -25,8 +30,12 @@ export const getBoard = async (req, res) => {
     const { orgId } = req.params;
     const boards = await Boards.find({
       orgId: new mongoose.Types.ObjectId(orgId),
-      members: new mongoose.Types.ObjectId(req.user.id),
-    }).populate("members", "name email imageUrl");
+      members: {
+        $elemMatch: {
+          user: new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+    }).populate("members.user", "name email imageUrl");
     res.status(200).json(boards);
   } catch (error) {
     res.status(500).json({ message: "Error getting board" });
@@ -36,10 +45,14 @@ export const getBoard = async (req, res) => {
 export const getBoardDetails = async (req, res) => {
   try {
     const { boardId } = req.params;
-    const board = await Boards.findById(boardId).populate(
-      "members",
-      "name iamgeUrl",
-    );
+    const board = await Boards.findOne({
+      _id: boardId,
+      members: {
+        $elemMatch: {
+          user: req.user.id, 
+        },
+      },
+    }).populate("members.user", "name email imageUrl");
     const columns = await Column.find({ boardId }).sort({ position: 1 });
     const cards = await Card.find({ boardId }).sort({ position: 1 });
     const columnMap = {};
