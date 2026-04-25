@@ -15,10 +15,23 @@ const BoardSchema = new mongoose.Schema(
     },
     members: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        role: {
+          type: String,
+          enum: ["admin", "member"],
+          default: "member",
+        },
+        addedAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -26,7 +39,7 @@ const BoardSchema = new mongoose.Schema(
     },
     boardDescription: { type: String },
     isArchived: { type: Boolean, default: false },
-    labels:[labelSchema]
+    labels: [labelSchema],
   },
   { timestamps: true },
 );
