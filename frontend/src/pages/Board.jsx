@@ -178,17 +178,25 @@ const Board = () => {
   const handleAddCard = async (cardName, column) => {
     const res = await postRequest(`/column/${column}`, {
       cardName,
-      boardId: board._id,
+      boardId: boardData._id,
     });
+
     const newCard = res;
+
     setColumns((prev) => {
       return prev.map((col) =>
-        col._id === column ? { ...col, cards: [...col.cards, newCard] } : col,
+        col._id === column ?
+          {
+            ...col,
+            cards: [...(col.cards || []), newCard], 
+          }
+        : col,
       );
     });
   };
 
   const handleUpdateBoardLabels = (updatedLabels) => {
+    console.log(updatedLabels)
     setBoardData((prev) => ({
       ...prev,
       labels: updatedLabels,
@@ -251,11 +259,10 @@ const Board = () => {
     setOrgMembers(res);
     setShowMembers(true);
   };
-
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
-  console.log(boardData);
+
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
@@ -272,13 +279,13 @@ const Board = () => {
                   index !== 0 ? "-ml-2" : ""
                 }`}
               >
-                {member.imageUrl ?
+                {member.user?.imageUrl ?
                   <img
-                    src={member.imageUrl}
-                    alt={member.name}
+                    src={member.user.imageUrl}
+                    alt={member.user.name}
                     className="w-full h-full object-cover"
                   />
-                : member.name[0].toUpperCase()}
+                : member.user?.name?.[0]?.toUpperCase() || "?"}
               </div>
             ))}
 
@@ -341,31 +348,34 @@ const Board = () => {
       {showMembers && (
         <div className="absolute right-10 top-30 bg-white shadow-lg rounded-lg w-80 p-3 z-50">
           <div className="flex p-1.5 items-center justify-between rounded-lg border border-gray-300 mb-3">
-            <input className="outline-none text-sm" type="text" placeholder="Enter name" />
-            <X size={20} className="text-gray-600" onClick={() => setShowMembers(false)} />
+            <input
+              className="outline-none text-sm"
+              type="text"
+              placeholder="Enter name"
+            />
+            <X
+              size={20}
+              className="text-gray-600"
+              onClick={() => setShowMembers(false)}
+            />
           </div>
           <div className="flex flex-col gap-3">
             {orgMembers.map((member) => (
               <div key={member._id}>
                 <div className="flex gap-2">
-                  {member.imageUrl ?
+                  {member.user?.imageUrl ?
                     <img
-                      className="h-10 w-10 rounded-full object-cover"
-                      src={member.imageUrl}
-                      alt=""
+                      src={member.user.imageUrl}
+                      alt={member.user.name}
+                      className="w-full h-full object-cover"
                     />
-                  : <p className="bg-gray-400 h-10 w-10 rounded-full flex items-center justify-center">
-                      {member.name[0]}
-                    </p>
-                  }
-
+                  : member.user?.name?.[0]?.toUpperCase() || "?"}
                   <div className="flex flex-col">
                     <p className="text-[13px] font-normal">{member.name}</p>
                     <p className="text-xs text-gray-500 font-light">
                       {member.email}
                     </p>
                   </div>
-                  
                 </div>
               </div>
             ))}

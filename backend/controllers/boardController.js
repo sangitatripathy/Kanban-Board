@@ -86,3 +86,26 @@ export const getBoardDetails = async (req, res) => {
     res.status(500).json({ message: "Error getting board details" });
   }
 };
+
+export const toggleLabelOnCard = async (req, res) => {
+  try {
+    const { cardId } = req.params;
+    const { labels } = req.body;
+
+    const updatedCard = await Card.findByIdAndUpdate(
+      cardId,
+      { labels },
+      { new: true },
+    );
+
+    return res.status(200).json({
+      message: "Labels updated successfully",
+      labels: updatedCard.labels,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error adding label",
+      error: error.message,
+    });
+  }
+};

@@ -80,7 +80,7 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
       }
       console.log(res);
       if (res) {
-        updateLabels(res);
+        updateBoardLabels(res);
         setTitle("");
         setEditingLabel(null);
         setView("list");
@@ -101,10 +101,10 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
       updatedLabels = [...existingLabel, item];
     }
 
-    await putRequest(`/card/${card._id}/labels`, {
+    await putRequest(`/org/board/${board._id}/card/${card._id}`, {
       labels: updatedLabels.map((l) => l._id),
     });
-
+    console.log(updatedLabels)
     assignLabels(card._id, updatedLabels);
   };
 
