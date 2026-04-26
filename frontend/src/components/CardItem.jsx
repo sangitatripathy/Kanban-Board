@@ -1,4 +1,5 @@
 import React from "react";
+import { priorityColor } from "@/utils/timeAgo";
 import { Archive, Clock } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -26,12 +27,6 @@ const CardItem = ({ card, onClick }) => {
     transform:
       transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
     transition: "transform 200ms cubic-bezier(0.2, 0, 0, 1)",
-  };
-
-  const priorityColor = {
-    Low: "bg-green-100 border-green-400 text-green-500",
-    Medium: "bg-yellow-100 border-yellow-400 text-yellow-500",
-    High: "bg-red-100 border-red-400 text-red-500",
   };
 
   const formattedDueDate =

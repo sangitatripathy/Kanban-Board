@@ -291,6 +291,22 @@ const Board = () => {
     setOrgMembers(res);
     setShowMembers(true);
   };
+
+  const handleUpdatePriority = (cardId, priority) => {
+    setColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        cards: col.cards.map((card) =>
+          card._id === cardId ? { ...card, priority } : card,
+        ),
+      })),
+    );
+
+    setSelectedCard((prev) =>
+      prev && prev._id === cardId ? { ...prev, priority } : prev,
+    );
+  };
+
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
@@ -300,7 +316,7 @@ const Board = () => {
       (m) => m.user._id.toString() === userId.toString(),
     );
   };
-  console.log(boardData)
+  console.log(boardData);
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
@@ -470,6 +486,7 @@ const Board = () => {
           assignLabels={handleAssignLabels}
           dateSave={handleUpdateCardDates}
           handleChecklist={handleUpdateChecklist}
+          handleUpdatePriority={handleUpdatePriority}
         />
       )}
     </div>

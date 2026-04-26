@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   Clock,
@@ -10,12 +10,22 @@ import {
   SquareCheck,
   RectangleEllipsis,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Label from "../Board/LabelDropdown";
 import Checklist from "../Board/Checklist";
 import Calendar from "../Board/Calendar";
 import Attachment from "../Board/Attachment";
 import Members from "../Board/Members";
-import { putRequest,deleteRequest } from "@/lib/axios";
+import { priorityColor } from "@/utils/timeAgo";
+import { putRequest, deleteRequest } from "@/lib/axios";
 
 const CardModal = ({
   card,
@@ -25,6 +35,7 @@ const CardModal = ({
   assignLabels,
   dateSave,
   handleChecklist,
+  handleUpdatePriority,
 }) => {
   if (!card) return null;
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -33,6 +44,7 @@ const CardModal = ({
   const [activeMenu, setactiveMenu] = useState(null);
   const [editingItem, setEditingItem] = useState(null);
   const [editText, setEditText] = useState("");
+  const [priority, setPriority] = useState(card.priority);
 
   const handleAddItem = async (checklistId) => {
     try {
@@ -70,13 +82,28 @@ const CardModal = ({
       const res = await deleteRequest(
         `/card/${card._id}/checklist/${checklistId}/item/${itemId}`,
       );
-      console.log(res)
+      console.log(res);
       handleChecklist(card._id, res);
       setactiveMenu(null);
     } catch (error) {
       console.error(error.message);
     }
   };
+
+  const handlePriorityChange = async (priority) => {
+    try {
+      const res = await putRequest(`/column/card/${card._id}`, {
+        priority,
+      });
+      handleUpdatePriority(card._id, priority);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    setPriority(card.priority);
+  }, [card]);
 
   return (
     <div
@@ -87,8 +114,33 @@ const CardModal = ({
         className="bg-white min-w-[75%] mt-10 rounded-xl shadow-lg h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-4">
-          <div className="flex gap-4">
+        <div className="flex justify-end items-center p-4">
+          <div className="flex gap-4 items-center">
+            <Select
+              value={priority}
+              onValueChange={(value) => {
+                setPriority(value);
+                handlePriorityChange(value);
+              }}
+            >
+              <SelectTrigger
+                className={`!h-6 !py-1 text-[11px] w-[90px] ${priorityColor[priority]}`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent side="bottom" position="popper" sideOffset={10}>
+                {["High", "Medium", "Low"].map((level) => (
+                  <SelectItem key={level} value={level}>
+                    <span
+                      className={`py-0.5 rounded text-xs ${priorityColor[level]}`}
+                    >
+                      {level}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Ellipsis className="text-gray-600" size={20} />
             <button
               onClick={onClose}
@@ -324,7 +376,7 @@ const CardModal = ({
                                 <button
                                   className="block w-full text-left text-[13px] px-3 py-1 text-sm text-red-500 hover:bg-red-200"
                                   onClick={() => {
-                                    deleteItem(list._id,item._id);
+                                    deleteItem(list._id, item._id);
                                   }}
                                 >
                                   Delete

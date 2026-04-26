@@ -43,7 +43,7 @@ export const getCardById = async (req, res) => {
 export const updateCard = async (req, res) => {
   try {
     const { cardId } = req.params;
-    const { cardName, description, startDate, dueDate, reminder, priority } =
+    const { cardName, description, priority } =
       req.body;
     const card = await Card.findById(cardId);
     if (!card) {
@@ -51,7 +51,7 @@ export const updateCard = async (req, res) => {
     }
     const updatedCard = await Card.findByIdAndUpdate(
       cardId,
-      { cardName, description, startDate, dueDate, reminder, priority },
+      { cardName, description, priority },
       { new: true },
     );
     res.status(200).json(updatedCard);
