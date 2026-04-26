@@ -19,15 +19,17 @@ const BoardList = ({ boards = [], onCreateBoard }) => {
   return (
     <>
       <div>
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={() => setOpenModal(true)}
-            className="flex gap-1 items-center text-sm rounded-3xl bg-blue-500 text-white px-4 py-2 hover:shadow"
-          >
-            <SquarePlus size={15} />
-            Create a Board
-          </button>
-        </div>
+        {onCreateBoard && (
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setOpenModal(true)}
+              className="flex gap-1 items-center text-sm rounded-3xl bg-blue-500 text-white px-4 py-2 hover:shadow"
+            >
+              <SquarePlus size={15} />
+              Create a Board
+            </button>
+          </div>
+        )}
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 min-h-50">
           {boards.map((board, index) => {

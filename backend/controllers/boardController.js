@@ -109,3 +109,23 @@ export const toggleLabelOnCard = async (req, res) => {
     });
   }
 };
+
+export const getAllBoardsForUser = async (req, res) => {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+
+    const boards = await Boards.find({
+      "members.user": userId,
+      isArchived: false,
+    })
+      .populate("members.user", "name email imageUrl")
+      .sort({ updatedAt: -1 });
+
+    res.json(boards);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching boards",
+      error: error.message,
+    });
+  }
+};

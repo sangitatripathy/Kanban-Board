@@ -34,7 +34,7 @@ export const UserProvider = ({ children }) => {
     }
     setUser(null);
   };
-  console.log(user)
+
   return (
     <UserContext.Provider value={{ user, setUser, login, logoutUser, loading }}>
       {children}

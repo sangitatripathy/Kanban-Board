@@ -10,6 +10,7 @@ import WorkSpace from "./pages/WorkSpace";
 import Organization from "./components/Organization";
 import Board from "./pages/Board";
 import Profile from "./pages/Profile";
+import AllBoards from "./pages/AllBoards";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/workspace/work" element={<WorkSpace />} />
           <Route path="/workspace/work/:orgId" element={<Organization />} />
           <Route path="/board/:boardId" element={<Board/>}/>
+          <Route path="/all-boards" element={<AllBoards/>}/>
         </Route>
         <Route path="*" element={<h1>Page not Found</h1>} />
       </Routes>

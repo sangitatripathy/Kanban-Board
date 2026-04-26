@@ -23,7 +23,7 @@ const Drawer = () => {
           <span className="text-sm">Dashboard</span>
         </div>
 
-        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-200">
+        <div onClick={()=>navigate('/all-boards')} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-200">
           <Layers size={18} />
           <span className="text-sm">All Boards</span>
         </div>
@@ -31,11 +31,6 @@ const Drawer = () => {
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-200">
           <Star size={18} />
           <span className="text-sm">Starred</span>
-        </div>
-
-        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-200">
-          <Clock size={18} />
-          <span className="text-sm">Recent</span>
         </div>
       </div>
 

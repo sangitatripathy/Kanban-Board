@@ -20,3 +20,11 @@ export const priorityColor = {
   Medium: "bg-yellow-100 border-yellow-400 text-yellow-500",
   High: "bg-red-100 border-red-400 text-red-500",
 };
+
+export const getGreeting = () => {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return "Good Morning";
+  if (hour < 18) return "Good Afternoon";
+  return "Good Evening";
+};
