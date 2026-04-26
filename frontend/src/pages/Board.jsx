@@ -30,6 +30,7 @@ const Board = () => {
   const [boardData, setBoardData] = useState();
   const [orgMembers, setOrgMembers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
+  const [selectedRoles, setSelectedRoles] = useState({});
   const { boardId } = useParams();
 
   useEffect(() => {
@@ -188,7 +189,7 @@ const Board = () => {
         col._id === column ?
           {
             ...col,
-            cards: [...(col.cards || []), newCard], 
+            cards: [...(col.cards || []), newCard],
           }
         : col,
       );
@@ -196,7 +197,7 @@ const Board = () => {
   };
 
   const handleUpdateBoardLabels = (updatedLabels) => {
-    console.log(updatedLabels)
+    console.log(updatedLabels);
     setBoardData((prev) => ({
       ...prev,
       labels: updatedLabels,
@@ -254,6 +255,37 @@ const Board = () => {
     );
   };
 
+  const handleAddMember = async (userId) => {
+    try {
+      const role = selectedRoles[userId] || "member";
+
+      await putRequest(`/board/${boardData._id}/add-members`, {
+        userId,
+        role,
+      });
+
+      const addedUser = orgMembers.find((m) => m.userId === userId);
+
+      setBoardData((prev) => ({
+        ...prev,
+        members: [
+          ...prev.members,
+          {
+            user: {
+              _id: addedUser.userId,
+              name: addedUser.name,
+              email: addedUser.email,
+              imageUrl: addedUser.imageUrl,
+            },
+            role,
+          },
+        ],
+      }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const getOrgMembers = async (orgId) => {
     const res = await getRequest(`/member/${orgId}`);
     setOrgMembers(res);
@@ -263,6 +295,12 @@ const Board = () => {
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
 
+  const isMemberInBoard = (userId) => {
+    return boardData?.members?.some(
+      (m) => m.user._id.toString() === userId.toString(),
+    );
+  };
+  console.log(boardData)
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
@@ -285,7 +323,7 @@ const Board = () => {
                     alt={member.user.name}
                     className="w-full h-full object-cover"
                   />
-                : member.user?.name?.[0]?.toUpperCase() || "?"}
+                : member.user?.name?.[0]?.toUpperCase()}
               </div>
             ))}
 
@@ -346,39 +384,80 @@ const Board = () => {
         </DndContext>
       </div>
       {showMembers && (
-        <div className="absolute right-10 top-30 bg-white shadow-lg rounded-lg w-80 p-3 z-50">
-          <div className="flex p-1.5 items-center justify-between rounded-lg border border-gray-300 mb-3">
-            <input
-              className="outline-none text-sm"
-              type="text"
-              placeholder="Enter name"
-            />
-            <X
-              size={20}
-              className="text-gray-600"
-              onClick={() => setShowMembers(false)}
-            />
-          </div>
-          <div className="flex flex-col gap-3">
-            {orgMembers.map((member) => (
-              <div key={member._id}>
-                <div className="flex gap-2">
-                  {member.user?.imageUrl ?
-                    <img
-                      src={member.user.imageUrl}
-                      alt={member.user.name}
-                      className="w-full h-full object-cover"
-                    />
-                  : member.user?.name?.[0]?.toUpperCase() || "?"}
-                  <div className="flex flex-col">
-                    <p className="text-[13px] font-normal">{member.name}</p>
-                    <p className="text-xs text-gray-500 font-light">
-                      {member.email}
-                    </p>
+        <div className="fixed inset-0 z-50 flex justify-center bg-black/40">
+          <div className="bg-white top-10 shadow-lg max-h-80 rounded-lg w-120 p-4 relative">
+            <div className="flex p-1.5 items-center justify-between rounded-lg border border-gray-300 mb-3">
+              <input
+                className="outline-none text-sm w-full"
+                type="text"
+                placeholder="Enter name"
+              />
+              <X
+                size={20}
+                className="text-gray-600 cursor-pointer"
+                onClick={() => setShowMembers(false)}
+              />
+            </div>
+            <div className="flex flex-col gap-3 max-h-80 overflow-y-auto">
+              {orgMembers.map((member) => {
+                const isAdded = isMemberInBoard(member.userId);
+                return (
+                  <div
+                    key={member.userId}
+                    className={`flex items-center justify-between p-2 rounded-lg ${
+                      isAdded ? "bg-green-100" : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {/* LEFT */}
+                    <div className="flex gap-2 items-center">
+                      {member.imageUrl ?
+                        <img
+                          src={member.imageUrl}
+                          alt={member.name}
+                          className="w-10 h-10 object-cover rounded-full"
+                        />
+                      : <p className="flex items-center justify-center bg-gray-300 rounded-full h-10 w-10">
+                          {member.name?.[0]?.toUpperCase()}
+                        </p>
+                      }
+
+                      <div className="flex flex-col">
+                        <p className="text-[13px]">{member.name}</p>
+                        <p className="text-xs text-gray-500">{member.email}</p>
+                      </div>
+                    </div>
+
+                    {isAdded ?
+                      <div className="text-green-600 text-sm font-medium">
+                        ✓ Added
+                      </div>
+                    : <div className="flex items-center gap-2">
+                        <select
+                          className="text-xs border rounded px-1 py-0.5"
+                          defaultValue="member"
+                          onChange={(e) =>
+                            setSelectedRoles((prev) => ({
+                              ...prev,
+                              [member.userId]: e.target.value,
+                            }))
+                          }
+                        >
+                          <option value="member">Member</option>
+                          <option value="admin">Admin</option>
+                        </select>
+
+                        <button
+                          onClick={() => handleAddMember(member.userId)}
+                          className="text-xs bg-blue-500 text-white px-2 py-1 rounded"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    }
                   </div>
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

@@ -27,7 +27,7 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-gray-100 rounded-xl w-72 p-3 shrink-0 transition ${
+      className={`bg-gray-100 rounded-xl w-72 p-3 shrink-0 flex flex-col max-h-[calc(100vh-130px)] transition ${
         isDragging ? "opacity-60" : ""
       }`}
     >
@@ -35,7 +35,7 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
       <div
         {...attributes}
         {...listeners}
-        className="flex justify-between items-center mb-3 cursor-grab"
+        className="flex justify-between items-center mb-3 cursor-grab shrink-0"
       >
         <h3 className="font-semibold text-sm">{column.title}</h3>
         <Ellipsis size={18} className="text-gray-500" />
@@ -46,7 +46,7 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
         items={(column.cards || []).map((card) => card._id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="flex flex-col gap-3 mb-3">
+        <div className="flex flex-col gap-3 mb-3 overflow-y-auto overflow-x-hidden pr-1 custom-scrollbar scrollbar-gutter-stable">
           {(column.cards || []).map((card) => (
             <CardItem
               key={card._id}

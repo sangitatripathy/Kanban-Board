@@ -13,7 +13,7 @@ import authRoute from "./routes/authRoute.js";
 import organisationRoute from "./Routes/organizationRoute.js";
 import inviteRoute from "./Routes/invite.js";
 import boardRoute from "./Routes/boardRoute.js";
-import columnRoute from "./Routes/columnRoute.js";
+import boardActivity from "./Routes/boardActivity.js";
 import cardRoute from "./Routes/cardRoute.js";
 import memberRoute from './Routes/members.js';
 import cardActionRoute from './Routes/Board/index.js'
@@ -72,7 +72,7 @@ app.use("/api/invite",inviteRoute);
 app.use("/api/analytics",adminAnalyticsRoute);
 
 app.use("/api/org",boardRoute);
-app.use("/api/board",columnRoute);
+app.use("/api/board",boardActivity);
 app.use("/api/column",cardRoute);
 app.use("/api/card",cardActionRoute)
 app.use("/api/member",memberRoute);

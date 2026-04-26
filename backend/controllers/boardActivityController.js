@@ -1,4 +1,5 @@
 import Column from "../models/Board/column.js";
+import Board from "../models/Board/boards.js";
 
 export const createColumn = async (req, res) => {
   try {
@@ -116,23 +117,47 @@ export const deleteColumn = async (req, res) => {
 
 export const reorderColumn = async (req, res) => {
   try {
-    const {columns} = req.body;
+    const { columns } = req.body;
 
-    if(!columns || !Array.isArray(columns)){
+    if (!columns || !Array.isArray(columns)) {
       return res.status(400).json({ message: "Invalid columns data" });
     }
 
-    const bulkOps = columns.map((col)=>({
-      updateOne:{
-        filter: {_id:col._id},
-        update:{position:col.position},
-      }
-    }))
-    await Column.bulkWrite(bulkOps)
+    const bulkOps = columns.map((col) => ({
+      updateOne: {
+        filter: { _id: col._id },
+        update: { position: col.position },
+      },
+    }));
+    await Column.bulkWrite(bulkOps);
     res.status(200).json({ message: "Columns reordered successfully" });
   } catch (error) {
     res.status(500).json({
       message: "Failed to reorder columns",
+      error: error.message,
+    });
+  }
+};
+
+export const addMembersToBoard = async (req, res) => {
+  try {
+    const { boardId } = req.params;
+    const { userId, role } = req.body;
+    const board = await Board.findById(boardId);
+    const alreadyMember = board.members.find(
+      (member) => member.user.toString() === userId,
+    );
+    if (alreadyMember) {
+      return res
+        .status(400)
+        .json({ message: "User is already a member of the board" });
+    }
+    board.members.push({user: userId, role:role || "member"});
+    await board.save();
+    res.status(200).json({ message: "Member added to board successfully", members: board.members });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to add members to board",
       error: error.message,
     });
   }
