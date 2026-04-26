@@ -36,6 +36,7 @@ const CardModal = ({
   dateSave,
   handleChecklist,
   handleUpdatePriority,
+  handleUpdateAssignees,
 }) => {
   if (!card) return null;
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -105,6 +106,10 @@ const CardModal = ({
     setPriority(card.priority);
   }, [card]);
 
+  const assigneeUsers = board.members.filter((member) =>
+    card.assignees.includes(member.user._id),
+  );
+
   return (
     <div
       className="fixed inset-0 bg-black/30 flex justify-center z-50"
@@ -154,7 +159,6 @@ const CardModal = ({
         <hr className="w-full" />
 
         <div className="flex h-full overflow-hidden">
-          {/* left div */}
           <div className="flex flex-col gap-3 p-6 w-[50%] border-r border-gray-300 overflow-y-auto">
             <h1 className="text-lg font-semibold text-gray-800">
               {card.cardName}
@@ -206,7 +210,12 @@ const CardModal = ({
                 />
               )}
               {activeDropdown == "members" && (
-                <Members onClose={() => setActiveDropdown(null)} />
+                <Members
+                  onClose={() => setActiveDropdown(null)}
+                  board={board}
+                  card={card}
+                  onUpdate={handleUpdateAssignees}
+                />
               )}
               {activeDropdown == "attachment" && (
                 <Attachment onClose={() => setActiveDropdown(null)} />
@@ -229,7 +238,6 @@ const CardModal = ({
               )}
             </div>
             <div className="flex items-center gap-4 mt-2 flex-wrap">
-              {/* LABELS */}
               {card.labels?.length > 0 && (
                 <div className="flex gap-2 flex-wrap">
                   {card.labels.map((label) => (
@@ -265,6 +273,29 @@ const CardModal = ({
                       });
                     })()}
                   </span>
+                </div>
+              )}
+              {assigneeUsers.length > 0 && (
+                <div className="flex items-center">
+                  <div className="flex -space-x-2">
+                    {assigneeUsers.map((member, index) => (
+                      <div key={member.user._id} className="relative group">
+                        {member.user.imageUrl ?
+                          <img
+                            src={member.user.imageUrl}
+                            className="w-7 h-7 rounded-full border-2 border-white object-cover"
+                          />
+                        : <div className="w-7 h-7 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white">
+                            {member.user.name?.[0]}
+                          </div>
+                        }
+
+                        <div className="absolute bottom-[-22px] left-1/2 -translate-x-1/2 hidden group-hover:block text-[10px] bg-black text-white px-1.5 py-0.5 rounded whitespace-nowrap">
+                          {member.user.name}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

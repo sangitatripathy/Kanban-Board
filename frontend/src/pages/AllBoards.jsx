@@ -33,7 +33,7 @@ const AllBoards = () => {
       <div className="flex-1 flex flex-col">
         <Navbar toggleDrawer={() => setOpenDrawer(!openDrawer)} />
         <div className="p-6">
-          <h1 className="text-xl font-semibold mb-4">All Boards</h1>
+          <h1 className="text-2xl font-semibold mb-4">All Boards</h1>
 
           <BoardList boards={boards} onCreateBoard={null} />
         </div>

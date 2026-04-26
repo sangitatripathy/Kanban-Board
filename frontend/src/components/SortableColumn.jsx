@@ -52,12 +52,12 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
               key={card._id}
               card={{ ...card, columnId: column._id }}
               onClick={onCardClick}
+              boardMembers={column.boardMembers}
             />
           ))}
         </div>
       </SortableContext>
 
-      {/* Add Card */}
       <AddColumn
         message="Add a card"
         btnText="Add Card"

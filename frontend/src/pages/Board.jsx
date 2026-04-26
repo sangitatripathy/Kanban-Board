@@ -37,7 +37,12 @@ const Board = () => {
     const fetchBoard = async () => {
       const res = await getRequest(`/org/board-details/${boardId}`);
       setBoardData(res);
-      setColumns(res.columns);
+      setColumns(
+        res.columns.map((col) => ({
+          ...col,
+          boardMembers: res.members,
+        })),
+      );
     };
     fetchBoard();
   }, [boardId]);
@@ -307,6 +312,21 @@ const Board = () => {
     );
   };
 
+  const handleUpdateAssignees = (cardId, assignees) => {
+    setColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        cards: col.cards.map((card) =>
+          card._id === cardId ? { ...card, assignees } : card,
+        ),
+      })),
+    );
+
+    setSelectedCard((prev) =>
+      prev && prev._id === cardId ? { ...prev, assignees } : prev,
+    );
+  };
+
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
   const extraCount = Math.max(0, members.length - 5);
@@ -316,7 +336,6 @@ const Board = () => {
       (m) => m.user._id.toString() === userId.toString(),
     );
   };
-  console.log(boardData);
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
@@ -424,7 +443,6 @@ const Board = () => {
                       isAdded ? "bg-green-100" : "hover:bg-gray-100"
                     }`}
                   >
-                    {/* LEFT */}
                     <div className="flex gap-2 items-center">
                       {member.imageUrl ?
                         <img
@@ -487,6 +505,7 @@ const Board = () => {
           dateSave={handleUpdateCardDates}
           handleChecklist={handleUpdateChecklist}
           handleUpdatePriority={handleUpdatePriority}
+          handleUpdateAssignees={handleUpdateAssignees}
         />
       )}
     </div>
