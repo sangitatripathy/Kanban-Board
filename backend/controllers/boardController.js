@@ -116,7 +116,6 @@ export const getAllBoardsForUser = async (req, res) => {
 
     const boards = await Boards.find({
       "members.user": userId,
-      isArchived: false,
     })
       .populate("members.user", "name email imageUrl")
       .sort({ updatedAt: -1 });

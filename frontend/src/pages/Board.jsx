@@ -31,6 +31,10 @@ const Board = () => {
   const [orgMembers, setOrgMembers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState({});
+  const [searchText, setSearchText] = useState("");
+  const [selectedLabels, setSelectedLabels] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [showFilter, setShowFilter] = useState(false);
   const { boardId } = useParams();
 
   useEffect(() => {
@@ -336,13 +340,48 @@ const Board = () => {
       (m) => m.user._id.toString() === userId.toString(),
     );
   };
+
+  const filteredColumns = columns.map((col) => {
+    const filteredCards = (col.cards || []).filter((card) => {
+      const matchesSearch =
+        searchText === "" ||
+        card.cardName?.toLowerCase().includes(searchText.toLowerCase());
+      const matchesLabel =
+        selectedLabels.length === 0 ||
+        card.labels?.some((l) => selectedLabels.includes(l._id.toString()));
+      const matchesMember =
+        selectedMembers.length === 0 ||
+        card.assignees?.some((id) => selectedMembers.includes(id.toString()));
+      return matchesSearch && matchesLabel && matchesMember;
+    });
+    return {
+      ...col,
+      cards: filteredCards,
+    };
+  });
+
   return (
     <div className="h-screen flex flex-col">
       <Navbar variant="board" hideDrawer={true} />
       <div className="px-4 py-2 flex justify-between items-center bg-linear-to-r from-purple-800 to-purple-500">
-        <div>
-          <h1 className="font-semibold text-white">{boardData?.boardName}</h1>
+        <h1 className="font-semibold text-white">{boardData?.boardName}</h1>
+        <div className=" flex justify-between px-2 py-1 rounded-md border w-80">
+          <input
+            type="text"
+            placeholder="Search Cards"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            className="text-sm text-white placeholder:text-purple-200 outline-none w-full bg-transparent"
+          />
+          {searchText && (
+            <X
+              className="text-purple-200 cursor-pointer"
+              size={20}
+              onClick={() => setSearchText("")}
+            />
+          )}
         </div>
+
         <div className="flex items-center gap-4">
           <div className="flex items-center">
             {visibleMembers.map((member, index) => (
@@ -368,21 +407,23 @@ const Board = () => {
               </div>
             )}
           </div>
-          <div>
-            {" "}
-            <ListFilter size={19} />
+          <div
+            onClick={() => setShowFilter(!showFilter)}
+            className="cursor-pointer"
+          >
+            <ListFilter size={19} className="text-white"/>
           </div>
           <div
             onClick={() => {
               getOrgMembers(boardData.orgId);
             }}
-            className="flex gap-2 bg-gray-300 px-2 py-1 rounded-md cursor-pointer"
+            className="flex gap-2 bg-purple-700 text-white px-2 py-1 rounded-md cursor-pointer"
           >
             <Users size={19} />
             <p>Add Member</p>
           </div>
           <button>
-            <EllipsisVertical size={19} />
+            <EllipsisVertical size={19} className="text-white"/>
           </button>
         </div>
       </div>
@@ -405,7 +446,7 @@ const Board = () => {
             strategy={horizontalListSortingStrategy}
           >
             <div className="flex gap-4 items-start">
-              {columns?.map((col) => (
+              {filteredColumns?.map((col) => (
                 <SortableColumn
                   key={col._id}
                   column={col}
@@ -492,6 +533,64 @@ const Board = () => {
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+      {showFilter && (
+        <div className="absolute right-15 top-30 bg-white shadow-lg rounded-lg p-4 w-64 z-50">
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-sm font-semibold">Filter</p>
+            <X className="hover:bg-gray-100" size={15} onClick={()=> setShowFilter(false)}/>
+          </div>
+          <div className="mb-3">
+            <p className="text-xs mb-1">Labels</p>
+            <div className="flex flex-col gap-1.5">
+              {boardData?.labels?.map((l) => (
+                <div key={l._id} className="flex gap-2 items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedLabels.includes(l._id.toString())}
+                    onChange={() =>
+                      setSelectedLabels((prev) =>
+                        prev.includes(l._id) ?
+                          prev.filter((id) => id !== l._id)
+                        : [...prev, l._id],
+                      )
+                    }
+                  />
+                  <p
+                    style={{ backgroundColor: l.color }}
+                    className="text-xs py-1 px-2 w-full rounded-md text-white text-center"
+                  >
+                    {l.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs mb-1">Members</p>
+            {boardData?.members?.map((m) => (
+              <div
+                key={m.user._id}
+                onClick={() =>
+                  setSelectedMembers((prev) =>
+                    prev.includes(m.user._id) ?
+                      prev.filter((id) => id !== m.user._id)
+                    : [...prev, m.user._id],
+                  )
+                }
+                className="flex items-center gap-2 cursor-pointer text-[13px] p-0.5"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedMembers.includes(m.user._id)}
+                  readOnly
+                />
+                <span>{m.user.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       )}
