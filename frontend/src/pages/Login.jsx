@@ -4,6 +4,7 @@ import { Mail, Lock, ArrowLeft } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { postRequest } from "../lib/axios";
 import { useUser } from "../context/userContext";
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const { login } = useUser();
@@ -26,10 +27,13 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await postRequest("/auth/login", formData);
-      console.log(res)
+      if(res){
+        toast.success("Logged in successfully")
+      }
       login(res);
       navigate("/dashboard");
     } catch (err) {
+      toast.error(err.message)
       console.error(err);
     }
   }

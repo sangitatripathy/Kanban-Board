@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   Layers,
@@ -8,11 +8,13 @@ import {
 } from "lucide-react";
 import { useUser } from "../context/userContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import ConfirmModal from "./Modal/ConfirmModal";
 
 const Drawer = () => {
   const { logoutUser } = useUser();
   const navigate = useNavigate();
-  const location = useLocation(); // 🔥 get current route
+  const location = useLocation();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     logoutUser();
@@ -31,9 +33,9 @@ const Drawer = () => {
         <div
           onClick={() => navigate("/dashboard")}
           className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-            isActive("/dashboard")
-              ? "bg-blue-100 dark:bg-gray-700 text-blue-600"
-              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
+            isActive("/dashboard") ?
+              "bg-blue-100 dark:bg-gray-700 text-blue-600"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
           }`}
         >
           <LayoutDashboard size={18} />
@@ -43,9 +45,9 @@ const Drawer = () => {
         <div
           onClick={() => navigate("/all-boards")}
           className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-            isActive("/all-boards")
-              ? "bg-blue-100 dark:bg-gray-700 text-blue-600"
-              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
+            isActive("/all-boards") ?
+              "bg-blue-100 dark:bg-gray-700 text-blue-600"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
           }`}
         >
           <Layers size={18} />
@@ -55,9 +57,9 @@ const Drawer = () => {
         {/* Starred */}
         <div
           className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-            isActive("/starred")
-              ? "bg-blue-100 dark:bg-gray-700 text-blue-600"
-              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
+            isActive("/starred") ?
+              "bg-blue-100 dark:bg-gray-700 text-blue-600"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
           }`}
         >
           <Star size={18} />
@@ -70,11 +72,13 @@ const Drawer = () => {
         <p className="text-sm text-gray-500 mb-4">WORKSPACES</p>
 
         <div className="flex flex-col gap-2">
-          <div className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-              isActive("/workspace/personal")
-                ? "bg-blue-100 dark:bg-gray-700 text-blue-600"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
-            }`}>
+          <div
+            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+              isActive("/workspace/personal") ?
+                "bg-blue-100 dark:bg-gray-700 text-blue-600"
+              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
+            }`}
+          >
             <div className="w-6 h-6 bg-purple-500 text-white flex items-center justify-center rounded">
               P
             </div>
@@ -83,9 +87,9 @@ const Drawer = () => {
 
           <div
             className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-              isActive("/workspace/work")
-                ? "bg-blue-100 dark:bg-gray-700 text-blue-600"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
+              isActive("/workspace/work") ?
+                "bg-blue-100 dark:bg-gray-700 text-blue-600"
+              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
             }`}
             onClick={() => navigate("/workspace/work")}
           >
@@ -108,12 +112,21 @@ const Drawer = () => {
         </div>
 
         <div
-          onClick={handleLogout}
+          onClick={() => setShowLogoutModal(true)}
           className="p-2 bg-red-400 hover:bg-red-600 text-white rounded cursor-pointer text-sm"
         >
           Log Out
         </div>
       </div>
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Log out"
+        description="Are you sure you want to log out?"
+        confirmText="Log out"
+        type="delete"
+      />
     </div>
   );
 };
