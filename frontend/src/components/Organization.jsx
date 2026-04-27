@@ -14,12 +14,12 @@ import MemberList from "./MemberList";
 import BoardList from "./BoardList";
 
 const Organization = () => {
-  const [boards, setBoards] = useState(null);
+  const [boards, setBoards] = useState([]);
   const [member, setMember] = useState([]);
   const [invites, setInvites] = useState([]);
   const [org, setOrg] = useState(null);
   const [openDrawer, setOpenDrawer] = useState(true);
-  const [activeTab, setActiveTab] = useState("members");
+  const [activeTab, setActiveTab] = useState("boards");
   const { orgId } = useParams();
 
   const getBoards = async () => {

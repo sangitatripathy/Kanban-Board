@@ -49,7 +49,7 @@ export const getBoardDetails = async (req, res) => {
       _id: boardId,
       members: {
         $elemMatch: {
-          user: req.user.id, 
+          user: req.user.id,
         },
       },
     }).populate("members.user", "name email imageUrl");
@@ -125,6 +125,52 @@ export const getAllBoardsForUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error fetching boards",
+      error: error.message,
+    });
+  }
+};
+
+export const handleBoardAction = async (req, res) => {
+  try {
+    const { boardId } = req.params;
+    const { action } = req.query;
+
+    if (!action) {
+      return res.status(400).json({ message: "Action is required" });
+    }
+
+    let board;
+
+    switch (action) {
+      case "archive":
+        board = await Boards.findByIdAndUpdate(
+          boardId,
+          { isArchived: true },
+          { new: true },
+        );
+        return res.json({ message: "Board archived", board });
+
+      case "unarchive":
+        board = await Boards.findByIdAndUpdate(
+          boardId,
+          { isArchived: false },
+          { new: true },
+        );
+        return res.json({ message: "Board restored", board });
+
+      case "delete":
+        await Boards.findByIdAndDelete(boardId);
+        await Column.deleteMany({ boardId });
+        await Card.deleteMany({ boardId });
+
+        return res.json({ message: "Board deleted" });
+
+      default:
+        return res.status(400).json({ message: "Invalid action" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error performing action",
       error: error.message,
     });
   }
