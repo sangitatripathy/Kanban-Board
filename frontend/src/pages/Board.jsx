@@ -428,7 +428,7 @@ const Board = () => {
           </button>
         </div>
       </div>
-      <div className="flex-1 px-4 mt-6 overflow-x-auto overflow-y-hidden bg-gray-50 dark:bg-gray-950">
+      <div className="flex-1 px-4 py-4 overflow-x-auto overflow-y-hidden bg-gray-50 dark:bg-gray-950">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -570,7 +570,6 @@ const Board = () => {
             />
           </div>
 
-          {/* Labels */}
           <div className="mb-3">
             <p className="text-xs mb-1 text-gray-600 dark:text-gray-400">
               Labels
@@ -603,7 +602,6 @@ const Board = () => {
             </div>
           </div>
 
-          {/* Members */}
           <div>
             <p className="text-xs mb-1 text-gray-600 dark:text-gray-400">
               Members
