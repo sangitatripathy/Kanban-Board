@@ -109,18 +109,18 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
   };
 
   return (
-    <div className="absolute top-8 right-0 bg-white shadow-lg rounded-lg z-50 w-64">
+    <div className="absolute top-8 right-0 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg rounded-lg z-50 w-64">
       {view === "list" && (
         <div>
           <div className="flex justify-between p-2">
-            <h1 className="text-[13px] font-semibold">Labels</h1>
+            <h1 className="text-[13px] font-semibold text-gray-900 dark:text-white">Labels</h1>
             <X
               onClick={onClose}
               size={15}
-              className="cursor-pointer text-gray-600"
+              className="cursor-pointer text-gray-600 dark:text-gray-400"
             />
           </div>
-          <hr />
+          <hr className="border-gray-200 dark:border-gray-700" />
           <div className="p-2">
             <div className="flex flex-col gap-2">
               {allLabels.map((item, i) => (
@@ -155,7 +155,7 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
                 setView("create");
                 setSelectedColor("#E7B8B5");
               }}
-              className="bg-gray-200 mt-3 w-full p-1 rounded-md text-[13px]"
+              className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 mt-3 w-full p-1 rounded-md text-[13px]"
             >
               Create a new label
             </button>
@@ -166,7 +166,7 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
         <div>
           <div className="flex items-center justify-between p-2">
             <ChevronLeft size={15} onClick={() => setView("list")} />
-            <p className="text-[13px] font-semibold">
+            <p className="text-[13px] font-semibold text-gray-900 dark:text-white">
               {view == "edit" ? "Edit Label" : "Create Label"}
             </p>
             <X
@@ -177,7 +177,7 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
           </div>
           <hr />
 
-          <div className="h-18 bg-gray-200 flex justify-center items-center">
+          <div className="h-18 bg-gray-200  dark:bg-gray-800 flex justify-center items-center">
             <div
               style={{ backgroundColor: selectedColor }}
               className={`h-8 w-50 rounded ${selectedColor}`}
@@ -186,7 +186,7 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
 
           <div className="p-2 mt-2">
             <div className="flex flex-col">
-              <label className="text-[13px] mb-1">Title</label>
+              <label className="text-[13px] mb-1 text-gray-700 dark:text-gray-300">Title</label>
               <input
                 type="text"
                 value={title}
@@ -195,7 +195,7 @@ const Label = ({ onClose, updateBoardLabels, assignLabels, card, board }) => {
               />
             </div>
             <div className="mt-2">
-              <h1 className="text-[13px]">Select a color</h1>
+              <h1 className="text-[13px] text-gray-700 dark:text-gray-300">Select a color</h1>
               <div className="grid grid-cols-6 gap-2 mt-2">
                 {trelloColors.map((color, index) => (
                   <div

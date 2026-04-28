@@ -2,10 +2,12 @@ import React from "react";
 import { Moon, Sun, Bell, User, PanelLeft, CircleCheckBig } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useUser } from "../context/userContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ toggleDrawer, variant = "default", hideDrawer = false }) => {
   const { user } = useUser();
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   return (
     <div
@@ -45,16 +47,17 @@ const Navbar = ({ toggleDrawer, variant = "default", hideDrawer = false }) => {
         </button>
 
         <Bell />
-
-        {user?.imageUrl ?
-          <img
-            src={`${user.imageUrl}`}
-            className="w-8 h-8 rounded-full object-cover"
-          />
-        : <div className="w-8 h-8 rounded-full bg-orange-600 flex justify-center items-center text-white">
-            <p>{user?.name?.[0].toUpperCase()}</p>
-          </div>
-        }
+        <div onClick={()=> navigate('/profile')}>
+          {user?.imageUrl ?
+            <img
+              src={`${user.imageUrl}`}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          : <div className="w-8 h-8 rounded-full bg-orange-600 flex justify-center items-center text-white">
+              <p>{user?.name?.[0].toUpperCase()}</p>
+            </div>
+          }
+        </div>
       </div>
     </div>
   );

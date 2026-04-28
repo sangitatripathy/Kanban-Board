@@ -25,7 +25,7 @@ const Main = () => {
 
   const [orgData, setOrgData] = useState(null);
   const [activityData, setActivityData] = useState([]);
-  const [range, setRange] = useState("7"); 
+  const [range, setRange] = useState("7");
   const getDashboardData = async () => {
     const res = await getRequest("/analytics/dashboard");
     setOrgData(res);
@@ -46,7 +46,7 @@ const Main = () => {
   const chartData = range === "7" ? activityData.slice(-7) : activityData;
 
   return (
-    <div className="px-8 bg-gray-200/50 min-h-screen">
+    <div className="px-8 min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <h1 className="text-2xl font-semibold mt-5">
         {getGreeting()}, {user?.name}
       </h1>
@@ -81,17 +81,19 @@ const Main = () => {
         />
       </div>
 
-      <div className="bg-white rounded-lg p-4 shadow-sm mt-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm mt-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold">
             Activity (Last {range} Days)
           </h2>
 
-          <div className="flex bg-gray-100 rounded-lg p-1 text-xs">
+          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 text-xs">
             <button
               onClick={() => setRange("7")}
               className={`px-3 py-1 rounded-md transition ${
-                range === "7" ? "bg-white shadow text-black" : "text-gray-500"
+                range === "7" ?
+                  "bg-white dark:bg-gray-900 shadow text-black dark:text-white"
+                : "text-gray-500 dark:text-gray-300"
               }`}
             >
               7 Days
@@ -100,7 +102,9 @@ const Main = () => {
             <button
               onClick={() => setRange("30")}
               className={`px-3 py-1 rounded-md transition ${
-                range === "30" ? "bg-white shadow text-black" : "text-gray-500"
+                range === "30" ?
+                  "bg-white dark:bg-gray-900 shadow text-black dark:text-white"
+                : "text-gray-500 dark:text-gray-300"
               }`}
             >
               30 Days
@@ -142,7 +146,7 @@ const Main = () => {
                 dataKey="created"
                 stroke="#3b82f6"
                 strokeWidth={2}
-                dot={false} 
+                dot={false}
                 activeDot={{ r: 4 }}
                 name="Created"
               />
@@ -160,7 +164,7 @@ const Main = () => {
           </ResponsiveContainer>
         }
       </div>
-      <div className="bg-white rounded-lg p-4 shadow-sm mt-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm mt-6">
         <h2 className="text-sm font-semibold mb-3 flex gap-3 items-center">
           {" "}
           <span>
@@ -177,7 +181,7 @@ const Main = () => {
             {orgData.upcomingDeadlines.map((card) => (
               <div
                 key={card._id}
-                className="flex items-center justify-between p-3 rounded-lg border hover:bg-gray-50"
+                className="flex items-center justify-between p-3 rounded-lg border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 <div className="flex flex-col">
                   <p className="text-sm font-medium">{card.cardName}</p>
@@ -209,9 +213,13 @@ const Main = () => {
 export default Main;
 
 const StatCard = ({ title, value, icon, border }) => (
-  <div className={`border-l-4 ${border} bg-white rounded-lg p-4 shadow-sm`}>
+  <div
+    className={`border-l-4 ${border} bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm`}
+  >
     <div className="flex justify-between items-start">
-      <p className="text-gray-600 text-xs font-medium">{title}</p>
+      <p className="text-gray-600 dark:text-gray-300 text-xs font-medium">
+        {title}
+      </p>
       {icon}
     </div>
 

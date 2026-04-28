@@ -116,7 +116,7 @@ const CardModal = ({
       onClick={onClose}
     >
       <div
-        className="bg-white min-w-[75%] mt-10 rounded-xl shadow-lg h-[80vh] flex flex-col"
+        className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-w-[75%] mt-10 rounded-xl shadow-lg h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-end items-center p-4">
@@ -146,10 +146,10 @@ const CardModal = ({
                 ))}
               </SelectContent>
             </Select>
-            <Ellipsis className="text-gray-600" size={20} />
+            <Ellipsis className="text-gray-600 dark:text-gray-400" size={20} />
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
             >
               <X size={20} />
             </button>
@@ -158,14 +158,14 @@ const CardModal = ({
 
         <hr className="w-full" />
 
-        <div className="flex h-full overflow-hidden">
-          <div className="flex flex-col gap-3 p-6 w-[50%] border-r border-gray-300 overflow-y-auto">
-            <h1 className="text-lg font-semibold text-gray-800">
+        <div className="flex h-full overflow-hidden rounded-lg">
+          <div className="flex flex-col gap-3 p-6 w-[50%] border-r border-gray-300 dark:border-gray-700 overflow-y-auto">
+            <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
               {card.cardName}
             </h1>
             <div className="flex gap-2 relative">
               <button
-                className="flex items-center gap-1 border border-gray-400 py-0.5 px-1 rounded-sm"
+                className="flex items-center gap-1 border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-0.5 px-1 rounded-sm"
                 onClick={() => setActiveDropdown("members")}
               >
                 <User size={15} className="text-gray-600" />
@@ -173,7 +173,7 @@ const CardModal = ({
               </button>
 
               <button
-                className="flex items-center gap-1 border border-gray-400 py-0.5 px-1 rounded-sm"
+                className="flex items-center gap-1 border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-0.5 px-1 rounded-sm"
                 onClick={() => setActiveDropdown("checklist")}
               >
                 <SquareCheck size={15} className="text-gray-600" />
@@ -181,14 +181,14 @@ const CardModal = ({
               </button>
 
               <button
-                className="flex items-center gap-1 border border-gray-400 py-0.5 px-1 rounded-sm"
+                className="flex items-center gap-1 border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-0.5 px-1 rounded-sm"
                 onClick={() => setActiveDropdown("attachment")}
               >
                 <Paperclip size={15} className="text-gray-600" />
                 <p className="text-[13px]">Attachment</p>
               </button>
               <button
-                className="flex items-center gap-1 border border-gray-400 py-0.5 px-1 rounded-sm"
+                className="flex items-center gap-1 border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-0.5 px-1 rounded-sm"
                 onClick={() => setActiveDropdown("date")}
               >
                 <Clock size={15} className="text-gray-600" />
@@ -196,7 +196,7 @@ const CardModal = ({
               </button>
 
               <button
-                className="flex items-center gap-1 border border-gray-400 py-0.5 px-1 rounded-sm"
+                className="flex items-center gap-1 border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-0.5 px-1 rounded-sm"
                 onClick={() => setActiveDropdown("label")}
               >
                 <p className="text-[13px]">Label</p>
@@ -253,7 +253,7 @@ const CardModal = ({
               )}
 
               {card.dueDate && (
-                <div className="flex gap-2 text-xs text-gray-700 bg-gray-200 px-2 py-1 rounded">
+                <div className="flex gap-2 text-xs bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 px-2 py-1 rounded">
                   <span>
                     Due:{" "}
                     {(() => {
@@ -263,9 +263,9 @@ const CardModal = ({
                         date.getHours() !== 0 || date.getMinutes() !== 0;
 
                       return date.toLocaleString("en-US", {
-                        month: "short", // Sep
-                        day: "numeric", // 12
-                        year: "numeric", // 2026
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
                         ...(hasTime && {
                           hour: "numeric",
                           minute: "2-digit",
@@ -283,9 +283,9 @@ const CardModal = ({
                         {member.user.imageUrl ?
                           <img
                             src={member.user.imageUrl}
-                            className="w-7 h-7 rounded-full border-2 border-white object-cover"
+                            className="w-7 h-7 rounded-full border-2 border-white dark:border-gray-900 object-cover"
                           />
-                        : <div className="w-7 h-7 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white">
+                        : <div className="w-7 h-7 rounded-full bg-gray-400 dark:bg-gray-600 dark:border-gray-900 text-white flex items-center justify-center text-xs border-2 border-white">
                             {member.user.name?.[0]}
                           </div>
                         }
@@ -305,7 +305,7 @@ const CardModal = ({
                 <h3>Description</h3>
               </div>
               <textarea
-                className="border border-gray-600 py-2 px-4 w-full rounded-md text-sm"
+                className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white py-2 px-4 w-full rounded-md text-sm"
                 placeholder="Add a more detailed description..."
               ></textarea>
             </div>
@@ -318,14 +318,16 @@ const CardModal = ({
 
                 return (
                   <div key={list._id} className="p-2 rounded-md">
-                    <h3 className="text-sm mb-1 font-medium">{list.title}</h3>
+                    <h3 className="text-sm text-gray-800 dark:text-gray-200 mb-1 font-medium">
+                      {list.title}
+                    </h3>
 
                     <div className="mb-2 flex gap-1 items-center">
                       <span className="text-xs text-gray-500 whitespace-nowrap">
                         {completed} / {total}
                       </span>
 
-                      <div className="w-full bg-gray-300 rounded-full h-2">
+                      <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2">
                         <div
                           className="bg-green-500 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${percent}%` }}
@@ -342,14 +344,16 @@ const CardModal = ({
                               checked={item.completed}
                               onChange={() => {}}
                             />
+
                             {editingItem === item._id ?
                               <div className="flex flex-col gap-2 w-full">
                                 <input
                                   type="text"
                                   value={editText}
                                   onChange={(e) => setEditText(e.target.value)}
-                                  className="border p-0.5 rounded text-sm w-full"
+                                  className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-0.5 rounded text-sm w-full"
                                 />
+
                                 <div className="flex gap-2">
                                   <button
                                     onClick={() => {
@@ -368,33 +372,39 @@ const CardModal = ({
                                       setEditingItem(null);
                                       setEditText("");
                                     }}
-                                    className="text-gray-600 text-[13px] px-2 py-0.5 rounded-xl bg-gray-200"
+                                    className="text-gray-600 dark:text-gray-300 text-[13px] px-2 py-0.5 rounded-xl bg-gray-200 dark:bg-gray-700"
                                   >
                                     Cancel
                                   </button>
                                 </div>
                               </div>
                             : <p
-                                className={`text-sm ${item.completed ? "line-through" : ""}`}
+                                className={`text-sm text-gray-800 dark:text-gray-200 ${
+                                  item.completed ?
+                                    "line-through opacity-60"
+                                  : ""
+                                }`}
                               >
                                 {item.text}
                               </p>
                             }
                           </div>
+
                           <div className="relative">
                             <EllipsisVertical
                               size={18}
-                              className="text-gray-700"
+                              className="text-gray-700 dark:text-gray-300"
                               onClick={() =>
                                 setactiveMenu(
                                   activeMenu === item._id ? null : item._id,
                                 )
                               }
                             />
+
                             {activeMenu === item._id && (
-                              <div className="absolute right-4 bottom-[-4] bg-white border rounded shadow-md z-10 w-24">
+                              <div className="absolute right-4 bottom-[-4] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-md z-10 w-24">
                                 <button
-                                  className="block w-full text-left text-[13px] px-3 py-1 text-sm hover:bg-blue-100"
+                                  className="block w-full text-left text-[13px] px-3 py-1 text-sm hover:bg-blue-100 dark:hover:bg-gray-700"
                                   onClick={() => {
                                     setEditingItem(item._id);
                                     setEditText(item.text);
@@ -405,7 +415,7 @@ const CardModal = ({
                                 </button>
 
                                 <button
-                                  className="block w-full text-left text-[13px] px-3 py-1 text-sm text-red-500 hover:bg-red-200"
+                                  className="block w-full text-left text-[13px] px-3 py-1 text-sm text-red-500 hover:bg-red-200 dark:hover:bg-red-900/40"
                                   onClick={() => {
                                     deleteItem(list._id, item._id);
                                   }}
@@ -418,13 +428,14 @@ const CardModal = ({
                         </div>
                       ))}
                     </div>
+
                     {activeInput === list._id ?
                       <div className="mt-2 flex flex-col gap-2">
                         <input
                           type="text"
                           value={itemText}
                           onChange={(e) => setItemText(e.target.value)}
-                          className="p-1 text-sm border rounded"
+                          className="p-1 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded"
                         />
 
                         <div className="flex gap-2">
@@ -434,12 +445,13 @@ const CardModal = ({
                           >
                             Add
                           </button>
+
                           <button
                             onClick={() => {
                               setActiveInput(null);
                               setItemText("");
                             }}
-                            className="text-gray-600 text-sm"
+                            className="text-gray-600 dark:text-gray-300 text-sm"
                           >
                             Cancel
                           </button>
@@ -447,7 +459,7 @@ const CardModal = ({
                       </div>
                     : <button
                         onClick={() => setActiveInput(list._id)}
-                        className="mt-2 text-sm bg-gray-200 px-2 py-1 rounded"
+                        className="mt-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded"
                       >
                         Add an item
                       </button>
@@ -458,20 +470,27 @@ const CardModal = ({
             </div>
           </div>
 
-          <div className="p-6 bg-gray-100 w-[50%]">
+          <div className="p-6 bg-gray-100 dark:bg-gray-800 w-[50%]">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
-                <MessageSquareMore size={20} className="text-gray-500" />
-                <p className="text-gray-700 text-md">Comments and activity</p>
+                <MessageSquareMore
+                  size={20}
+                  className="text-gray-500 dark:text-gray-400"
+                />
+                <p className="text-gray-700 dark:text-gray-300 text-md">
+                  Comments and activity
+                </p>
               </div>
-              <button className="bg-gray-200 px-2 py-1 rounded-md text-sm">
+
+              <button className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded-md text-sm">
                 Show details
               </button>
             </div>
+
             <input
               type="text"
               placeholder="Write a comment"
-              className="px-2 py-1.5 bg-white w-full rounded-md text-sm mt-3 border-none outline-none"
+              className="px-2 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 w-full rounded-md text-sm mt-3 border-none outline-none"
             />
           </div>
         </div>

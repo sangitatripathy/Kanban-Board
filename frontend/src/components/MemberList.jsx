@@ -30,9 +30,9 @@ const MemberList = ({ member = [], invites = [], onInvite }) => {
       </div>
 
       <Tabs defaultValue="members" className="w-full">
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
           {/* Tabs Header */}
-          <div className="border-b px-4 h-12 flex items-center">
+          <div className="border-b border-gray-200 dark:border-gray-700 px-4 h-12 flex items-center">
             <TabsList className="bg-transparent p-0 h-12">
               <TabsTrigger
                 value="members"
@@ -55,16 +55,16 @@ const MemberList = ({ member = [], invites = [], onInvite }) => {
             <Table>
               <TableHeader className="h-12">
                 <TableRow>
-                  <TableHead className="text-xs text-gray-500 uppercase">
+                  <TableHead className="text-xs text-gray-500 dark:text-gray-400 uppercase">
                     User
                   </TableHead>
-                  <TableHead className="text-xs text-gray-500 uppercase">
+                  <TableHead className="text-xs text-gray-500 dark:text-gray-400 uppercase">
                     Email
                   </TableHead>
-                  <TableHead className="text-xs text-gray-500 uppercase">
+                  <TableHead className="text-xs text-gray-500 dark:text-gray-400 uppercase">
                     Joined
                   </TableHead>
-                  <TableHead className="text-xs text-gray-500 uppercase">
+                  <TableHead className="text-xs text-gray-500 dark:text-gray-400 uppercase">
                     Role
                   </TableHead>
                 </TableRow>
@@ -74,10 +74,10 @@ const MemberList = ({ member = [], invites = [], onInvite }) => {
                 {member.map((m) => (
                   <TableRow
                     key={m.userId}
-                    className="hover:bg-gray-50 transition"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                   >
                     <TableCell className="flex items-center gap-3 py-4 h-12">
-                      <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium overflow-hidden">
+                      <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-medium overflow-hidden">
                         {m.imageUrl ?
                           <img
                             src={m.imageUrl}
@@ -91,7 +91,7 @@ const MemberList = ({ member = [], invites = [], onInvite }) => {
 
                     <TableCell className="py-4">{m.email}</TableCell>
 
-                    <TableCell className="py-4 text-gray-500 text-sm">
+                    <TableCell className="py-4 text-gray-500 dark:text-gray-400 text-sm">
                       {timeAgo(m.createdAt)}
                     </TableCell>
 
@@ -129,7 +129,7 @@ const MemberList = ({ member = [], invites = [], onInvite }) => {
                 {invites.map((inv) => (
                   <TableRow
                     key={inv._id}
-                    className="hover:bg-gray-50 transition"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                   >
                     <TableCell className="py-4">{inv.email}</TableCell>
 

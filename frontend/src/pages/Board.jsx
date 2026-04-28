@@ -35,6 +35,7 @@ const Board = () => {
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
+  const [memberSearch, setMemberSearch] = useState("");
   const { boardId } = useParams();
 
   useEffect(() => {
@@ -411,7 +412,7 @@ const Board = () => {
             onClick={() => setShowFilter(!showFilter)}
             className="cursor-pointer"
           >
-            <ListFilter size={19} className="text-white"/>
+            <ListFilter size={19} className="text-white" />
           </div>
           <div
             onClick={() => {
@@ -423,11 +424,11 @@ const Board = () => {
             <p>Add Member</p>
           </div>
           <button>
-            <EllipsisVertical size={19} className="text-white"/>
+            <EllipsisVertical size={19} className="text-white" />
           </button>
         </div>
       </div>
-      <div className="flex-1 px-4 mt-6 overflow-x-auto overflow-y-hidden">
+      <div className="flex-1 px-4 mt-6 overflow-x-auto overflow-y-hidden bg-gray-50 dark:bg-gray-950">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -461,89 +462,120 @@ const Board = () => {
       </div>
       {showMembers && (
         <div className="fixed inset-0 z-50 flex justify-center bg-black/40">
-          <div className="bg-white top-10 shadow-lg max-h-80 rounded-lg w-120 p-4 relative">
-            <div className="flex p-1.5 items-center justify-between rounded-lg border border-gray-300 mb-3">
+          <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white top-10 shadow-lg max-h-80 rounded-lg w-120 p-4 relative flex flex-col">
+            <div className="flex p-1.5 items-center justify-between rounded-lg border border-gray-300 dark:border-gray-700 mb-3">
               <input
-                className="outline-none text-sm w-full"
+                className="outline-none text-sm w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400"
                 type="text"
                 placeholder="Enter name"
+                value={memberSearch}
+                onChange={(e) => setMemberSearch(e.target.value)}
               />
               <X
                 size={20}
-                className="text-gray-600 cursor-pointer"
-                onClick={() => setShowMembers(false)}
+                className="text-gray-600 dark:text-gray-400 cursor-pointer"
+                onClick={() => {
+                  setShowMembers(false);
+                  setMemberSearch("");
+                }}
               />
             </div>
-            <div className="flex flex-col gap-3 max-h-80 overflow-y-auto">
-              {orgMembers.map((member) => {
-                const isAdded = isMemberInBoard(member.userId);
-                return (
-                  <div
-                    key={member.userId}
-                    className={`flex items-center justify-between p-2 rounded-lg ${
-                      isAdded ? "bg-green-100" : "hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex gap-2 items-center">
-                      {member.imageUrl ?
-                        <img
-                          src={member.imageUrl}
-                          alt={member.name}
-                          className="w-10 h-10 object-cover rounded-full"
-                        />
-                      : <p className="flex items-center justify-center bg-gray-300 rounded-full h-10 w-10">
-                          {member.name?.[0]?.toUpperCase()}
-                        </p>
+
+            <div className="flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1 pr-1">
+              {orgMembers
+                .filter((member) =>
+                  member.name
+                    ?.toLowerCase()
+                    .includes(memberSearch.toLowerCase()),
+                )
+                .map((member) => {
+                  const isAdded = isMemberInBoard(member.userId);
+
+                  return (
+                    <div
+                      key={member.userId}
+                      className={`flex items-center justify-between p-2 rounded-lg transition ${
+                        isAdded ?
+                          "bg-green-100 dark:bg-green-900/30"
+                        : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      <div className="flex gap-2 items-center">
+                        {member.imageUrl ?
+                          <img
+                            src={member.imageUrl}
+                            alt={member.name}
+                            className="w-10 h-10 object-cover rounded-full"
+                          />
+                        : <p className="flex items-center justify-center bg-gray-300 dark:bg-gray-700 rounded-full h-10 w-10 text-gray-800 dark:text-white">
+                            {member.name?.[0]?.toUpperCase()}
+                          </p>
+                        }
+
+                        <div className="flex flex-col">
+                          <p className="text-[13px] text-gray-900 dark:text-white">
+                            {member.name}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {member.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      {isAdded ?
+                        <div className="text-green-600 dark:text-green-400 text-sm font-medium">
+                          ✓ Added
+                        </div>
+                      : <div className="flex items-center gap-2">
+                          <select
+                            className="text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-1 py-0.5"
+                            defaultValue="member"
+                            onChange={(e) =>
+                              setSelectedRoles((prev) => ({
+                                ...prev,
+                                [member.userId]: e.target.value,
+                              }))
+                            }
+                          >
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                          </select>
+
+                          <button
+                            onClick={() => handleAddMember(member.userId)}
+                            className="text-xs bg-blue-500 text-white px-2 py-1 rounded"
+                          >
+                            Add
+                          </button>
+                        </div>
                       }
-
-                      <div className="flex flex-col">
-                        <p className="text-[13px]">{member.name}</p>
-                        <p className="text-xs text-gray-500">{member.email}</p>
-                      </div>
                     </div>
-
-                    {isAdded ?
-                      <div className="text-green-600 text-sm font-medium">
-                        ✓ Added
-                      </div>
-                    : <div className="flex items-center gap-2">
-                        <select
-                          className="text-xs border rounded px-1 py-0.5"
-                          defaultValue="member"
-                          onChange={(e) =>
-                            setSelectedRoles((prev) => ({
-                              ...prev,
-                              [member.userId]: e.target.value,
-                            }))
-                          }
-                        >
-                          <option value="member">Member</option>
-                          <option value="admin">Admin</option>
-                        </select>
-
-                        <button
-                          onClick={() => handleAddMember(member.userId)}
-                          className="text-xs bg-blue-500 text-white px-2 py-1 rounded"
-                        >
-                          Add
-                        </button>
-                      </div>
-                    }
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>
       )}
       {showFilter && (
-        <div className="absolute right-15 top-30 bg-white shadow-lg rounded-lg p-4 w-64 z-50">
+        <div className="absolute right-15 top-30 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg rounded-lg p-4 w-64 z-50">
           <div className="flex justify-between items-center mb-2">
-            <p className="text-sm font-semibold">Filter</p>
-            <X className="hover:bg-gray-100" size={15} onClick={()=> setShowFilter(false)}/>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              Filter
+            </p>
+
+            <X
+              className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+              size={15}
+              onClick={() => setShowFilter(false)}
+            />
           </div>
+
+          {/* Labels */}
           <div className="mb-3">
-            <p className="text-xs mb-1">Labels</p>
+            <p className="text-xs mb-1 text-gray-600 dark:text-gray-400">
+              Labels
+            </p>
+
             <div className="flex flex-col gap-1.5">
               {boardData?.labels?.map((l) => (
                 <div key={l._id} className="flex gap-2 items-center">
@@ -557,10 +589,12 @@ const Board = () => {
                         : [...prev, l._id],
                       )
                     }
+                    className="accent-blue-500"
                   />
+
                   <p
                     style={{ backgroundColor: l.color }}
-                    className="text-xs py-1 px-2 w-full rounded-md text-white text-center"
+                    className={`text-xs py-1 px-2 w-full rounded-md text-white text-center ${l.color}`}
                   >
                     {l.name}
                   </p>
@@ -569,8 +603,12 @@ const Board = () => {
             </div>
           </div>
 
+          {/* Members */}
           <div>
-            <p className="text-xs mb-1">Members</p>
+            <p className="text-xs mb-1 text-gray-600 dark:text-gray-400">
+              Members
+            </p>
+
             {boardData?.members?.map((m) => (
               <div
                 key={m.user._id}
@@ -581,14 +619,17 @@ const Board = () => {
                     : [...prev, m.user._id],
                   )
                 }
-                className="flex items-center gap-2 cursor-pointer text-[13px] p-0.5"
+                className="flex items-center gap-2 cursor-pointer text-[13px] p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
               >
                 <input
                   type="checkbox"
                   checked={selectedMembers.includes(m.user._id)}
                   readOnly
+                  className="accent-blue-500"
                 />
-                <span>{m.user.name}</span>
+                <span className="text-gray-800 dark:text-gray-200">
+                  {m.user.name}
+                </span>
               </div>
             ))}
           </div>

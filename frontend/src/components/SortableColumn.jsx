@@ -27,7 +27,7 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-gray-100 rounded-xl w-72 p-3 shrink-0 flex flex-col max-h-[calc(100vh-130px)] transition ${
+      className={`bg-gray-100 dark:bg-gray-900 rounded-xl w-72 p-3 shrink-0 flex flex-col max-h-[calc(100vh-130px)] transition ${
         isDragging ? "opacity-60" : ""
       }`}
     >
@@ -37,8 +37,8 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
         {...listeners}
         className="flex justify-between items-center mb-3 cursor-grab shrink-0"
       >
-        <h3 className="font-semibold text-sm">{column.title}</h3>
-        <Ellipsis size={18} className="text-gray-500" />
+        <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">{column.title}</h3>
+        <Ellipsis size={18} className="text-gray-500 dark:text-gray-400" />
       </div>
 
       {/* Cards */}

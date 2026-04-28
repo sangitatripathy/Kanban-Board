@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await getRequest("/auth/me"); // or /user/me
+      const res = await getRequest("/auth/me"); 
       setUser(res);
     } catch (err) {
       setUser((prev) => prev ?? null);

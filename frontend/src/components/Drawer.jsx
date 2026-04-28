@@ -22,7 +22,14 @@ const Drawer = () => {
   };
 
   const isActive = (path) => location.pathname === path;
-
+  const menuItemClass = (path) => `
+  flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors group
+  ${
+    isActive(path) ?
+      "bg-blue-100 dark:bg-gray-700 text-blue-600"
+    : "text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+  }
+`;
   return (
     <div className="w-64 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 rounded-tr-xl rounded-br-xl shadow-lg px-4 py-6 flex flex-col gap-6">
       <div>
@@ -32,52 +39,38 @@ const Drawer = () => {
       <div className="flex flex-col gap-2 mt-2">
         <div
           onClick={() => navigate("/dashboard")}
-          className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-            isActive("/dashboard") ?
-              "bg-blue-100 dark:bg-gray-700 text-blue-600"
-            : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
-          }`}
+          className={menuItemClass("/dashboard")}
         >
-          <LayoutDashboard size={18} />
-          <span className="text-sm">Dashboard</span>
+          <LayoutDashboard size={18} className="text-inherit" />
+          <span className="text-sm text-inherit">Dashboard</span>
         </div>
 
         <div
           onClick={() => navigate("/all-boards")}
-          className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-            isActive("/all-boards") ?
-              "bg-blue-100 dark:bg-gray-700 text-blue-600"
-            : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
-          }`}
+          className={menuItemClass("/all-boards")}
         >
-          <Layers size={18} />
-          <span className="text-sm">All Boards</span>
+          <Layers size={18} className="text-inherit" />
+          <span className="text-sm text-inherit">All Boards</span>
         </div>
 
         {/* Starred */}
         <div
-          className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-            isActive("/starred") ?
-              "bg-blue-100 dark:bg-gray-700 text-blue-600"
-            : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
-          }`}
+          onClick={() => navigate("/all-boards")}
+          className={menuItemClass("/starred-boards")}
         >
-          <Star size={18} />
-          <span className="text-sm">Starred</span>
+          <Star size={18} className="text-inherit" />
+          <span className="text-sm text-inherit">Starred</span>
         </div>
       </div>
 
       {/* Workspaces */}
       <div className="mt-6">
-        <p className="text-sm text-gray-500 mb-4">WORKSPACES</p>
+        <p className="text-sm text-gray-500 mb-4 dark:text-white">WORKSPACES</p>
 
         <div className="flex flex-col gap-2">
           <div
-            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-              isActive("/workspace/personal") ?
-                "bg-blue-100 dark:bg-gray-700 text-blue-600"
-              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
-            }`}
+            className={menuItemClass("/workspace/personal")}
+            onClick={() => navigate("/workspace/personal")}
           >
             <div className="w-6 h-6 bg-purple-500 text-white flex items-center justify-center rounded">
               P
@@ -86,11 +79,7 @@ const Drawer = () => {
           </div>
 
           <div
-            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-              isActive("/workspace/work") ?
-                "bg-blue-100 dark:bg-gray-700 text-blue-600"
-              : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700"
-            }`}
+            className={menuItemClass("/workspace/work")}
             onClick={() => navigate("/workspace/work")}
           >
             <div className="w-6 h-6 bg-blue-500 text-white flex items-center justify-center rounded">
@@ -101,7 +90,6 @@ const Drawer = () => {
         </div>
       </div>
 
-      {/* Bottom */}
       <div className="mt-auto flex flex-col gap-2">
         <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-sm">
           Team Settings

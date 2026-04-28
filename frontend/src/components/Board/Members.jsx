@@ -19,27 +19,33 @@ const Members = ({ onClose, board, card, onUpdate }) => {
   };
 
   return (
-    <div className="absolute top-8 right-[-10] bg-white shadow-lg rounded-lg z-50 w-64">
+    <div className="absolute top-8 right-[-10] bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg rounded-lg z-50 w-64">
       <div className="flex p-1 items-center">
-        <h1 className="w-80 text-center text-sm font-semibold">Members</h1>
+        <h1 className="w-80 text-center text-sm font-semibold text-gray-900 dark:text-white">
+          Members
+        </h1>
+
         <X
           onClick={onClose}
           size={20}
-          className="cursor-pointer text-gray-600"
+          className="cursor-pointer text-gray-600 dark:text-gray-400"
         />
       </div>
 
-      <hr />
+      <hr className="border-gray-200 dark:border-gray-700" />
 
       <div className="p-2 flex flex-col gap-2">
+        {/* Search */}
         <input
           type="text"
           placeholder="Search Members"
-          className="border p-1 rounded-md text-sm w-full"
+          className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-1 rounded-md text-sm w-full placeholder-gray-400"
         />
 
         <div className="flex flex-col">
-          <h3 className="text-xs mb-1">Board Members</h3>
+          <h3 className="text-xs mb-1 text-gray-600 dark:text-gray-400">
+            Board Members
+          </h3>
 
           {board.members.map((member) => {
             const assigned = isAssigned(member.user._id);
@@ -48,8 +54,10 @@ const Members = ({ onClose, board, card, onUpdate }) => {
               <div
                 key={member.user._id}
                 onClick={() => handleToggle(member.user._id)}
-                className={`flex items-center justify-between px-2 py-1 rounded cursor-pointer ${
-                  assigned ? "bg-green-100" : "hover:bg-gray-100"
+                className={`flex items-center justify-between px-2 py-1 rounded cursor-pointer transition ${
+                  assigned ?
+                    "bg-green-100 dark:bg-green-900/30"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -58,14 +66,21 @@ const Members = ({ onClose, board, card, onUpdate }) => {
                       src={member.user.imageUrl}
                       className="w-9 h-9 rounded-full"
                     />
-                  : <div className="w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center text-xs">
+                  : <div className="w-9 h-9 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-xs text-gray-800 dark:text-white">
                       {member.user.name?.[0]}
                     </div>
                   }
 
-                  <p className="text-sm">{member.user.name}</p>
+                  <p className="text-sm text-gray-900 dark:text-gray-200">
+                    {member.user.name}
+                  </p>
                 </div>
-                {assigned && <span className="text-green-600 text-sm">✓</span>}
+
+                {assigned && (
+                  <span className="text-green-600 dark:text-green-400 text-sm">
+                    ✓
+                  </span>
+                )}
               </div>
             );
           })}

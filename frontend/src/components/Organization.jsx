@@ -88,7 +88,7 @@ const Organization = () => {
       >
         <Drawer />
       </div>
-      <div className="flex-1 bg-gray-100/50 dark:bg-gray-800">
+      <div className="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
         <Navbar toggleDrawer={() => setOpenDrawer(!openDrawer)} />
         <div className="px-10 py-4 ">
           <div>
@@ -98,7 +98,7 @@ const Organization = () => {
             >
               <ArrowLeft
                 size={20}
-                className="text-gray-500 dark:text-gray-300"
+                className="text-gray-500 dark:text-gray-400"
               />
               <p className="font-medium text-gray-700 dark:text-gray-300 text-sm">
                 Back to workspaces
@@ -108,37 +108,43 @@ const Organization = () => {
               <h1 className="p-3 h-10 w-10 flex justify-center items-center bg-radial-[at_25%_25%] from-purple-500 to-purple-200 rounded-lg font-bold">
                 {org?.name[0].toUpperCase()}
               </h1>
-              <p className="font-bold">{org?.name}</p>
+              <p className="font-bold text-gray-900 dark:text-white">{org?.name}</p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 mt-5">
             <div
               onClick={() => setActiveTab("members")}
-              className="shadow-md bg-white min-h-25 rounded-lg px-3 py-2 flex items-center gap-5 transition active:scale-95"
+              className="shadow-md bg-white dark:bg-gray-800 min-h-25 rounded-lg px-3 py-2 flex items-center gap-5 transition active:scale-95"
             >
               <Users className="text-blue-500" />
               <div>
-                <p className="text-sm text-gray-500">Members</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Members
+                </p>
                 <p className="text-md font-semibold">{member?.length}</p>
               </div>
             </div>
 
             <div
               onClick={() => setActiveTab("boards")}
-              className="shadow-md bg-white min-h-25 rounded-lg px-3 py-2 flex items-center gap-5 transition active:scale-95"
+              className="shadow-md bg-white dark:bg-gray-800 min-h-25 rounded-lg px-3 py-2 flex items-center gap-5 transition active:scale-95"
             >
               <ClipboardCheck className="text-green-500" />
               <div>
-                <p className="text-sm text-gray-500">Boards</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Boards
+                </p>
                 <p className="text-md font-semibold">{boards?.length}</p>
               </div>
             </div>
 
-            <div className="shadow-md bg-white min-h-25 rounded-lg px-3 py-2 flex items-center gap-5 transition active:scale-95">
+            <div className="shadow-md bg-white dark:bg-gray-800 min-h-25 rounded-lg px-3 py-2 flex items-center gap-5 transition active:scale-95">
               <ChartNoAxesCombined className="text-purple-400 " />
               <div>
-                <p className="text-sm text-gray-500">Analytics</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Analytics
+                </p>
                 <p className="text-md font-semibold">{`Created ${created}`}</p>
               </div>
             </div>

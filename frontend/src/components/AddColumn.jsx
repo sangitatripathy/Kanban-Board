@@ -21,12 +21,12 @@ const AddColumn = ({ onAdd,message,btnText }) => {
           + {message}
         </button>
       ) : (
-        <div className="bg-white p-3 rounded-xl shadow">
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter list title..."
-            className="w-full border p-1 rounded-xl mb-2 text-[13px]"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-1 rounded-xl mb-2 text-[13px]"
           />
           <div className="flex gap-2">
             <button
@@ -35,7 +35,7 @@ const AddColumn = ({ onAdd,message,btnText }) => {
             >
               Save
             </button>
-            <button onClick={() => setOpen(false)} className="bg-gray-200 px-3 text-[13px] rounded-xl">Cancel</button>
+            <button onClick={() => setOpen(false)} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 text-[13px] rounded-xl">Cancel</button>
           </div>
         </div>
       )}
