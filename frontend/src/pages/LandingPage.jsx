@@ -13,8 +13,6 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const scrollToFeatures = () => {
-    console.log(featureRef);
-    console.log(featureRef.current);
     featureRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -68,8 +66,15 @@ const LandingPage = () => {
 
         {isOpen && (
           <div className="absolute top-14 left-0 w-full flex flex-col items-center bg-white shadow-md gap-3 py-4 md:hidden">
-            <p className="text-gray-500 font-medium">Features</p>
-            <p className="text-gray-500 font-medium">Testimonials</p>
+            <p className="text-gray-500 font-medium" onClick={scrollToFeatures}>
+              Features
+            </p>
+            <p
+              className="text-gray-500 font-medium"
+              onClick={scrollToTestimonials}
+            >
+              Testimonials
+            </p>
             <p className="text-gray-500 font-medium">pricing</p>
             <p
               onClick={() => navigate("/login")}
@@ -86,28 +91,28 @@ const LandingPage = () => {
           </div>
         )}
       </div>
-      <div className="h-screen w-full md:w-[90%] grid md:grid-cols-2 px-10 gap-8 mx-auto">
+      <div className="min-h-screen md:h-screen w-full md:w-[90%] grid md:grid-cols-2 px-6 md:px-10 gap-0 md:gap-8 mx-auto">
         <div className="flex flex-col justify-center">
-          <h1 className="text-6xl font-bold mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Organize Your Work,{" "}
-            <span className="text-6xl font-bold bg-linear-to-r from-blue-500 to-yellow-500 bg-clip-text text-transparent">
+            <span className="text-4xl md:text-6xl font-bold bg-linear-to-r from-blue-500 to-yellow-500 bg-clip-text text-transparent">
               Amplify Your Team
             </span>
           </h1>
           <div className="mt-4">
-            <p className="text-gray-800 text-lg">
+            <p className="text-gray-800 sm:text-sm md:text-lg">
               The visual project management tool that helps teams move work
               forward with clarity and confidence.
             </p>
             <div className="my-4 flex gap-5">
-              <button className="bg-blue-500 text-white px-4 py-3 rounded-lg cursor-pointer">
+              <button className="bg-blue-500 text-white px-2 py-1.5 md:px-4 md:py-3 rounded-lg cursor-pointer text-sm">
                 Get Started Free
               </button>
-              <button className="bg-gray-300 px-4 py-3 rounded-lg cursor-pointer">
+              <button className="bg-gray-300 px-2 py-1.5 md:px-4 md:py-3 rounded-lg cursor-pointer text-sm">
                 Watch Demo
               </button>
             </div>
-            <p className="text-s text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               No credit card required • Free forever • 14-day trial of premium
               features
             </p>

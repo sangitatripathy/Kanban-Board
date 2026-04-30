@@ -30,13 +30,15 @@ const Testimonials = () => {
   ];
 
   return (
-    <div className="bg-white w-full p-10">
-      <div className="w-full flex flex-col items-center gap-2 mb-20">
-        <h1 className="text-4xl font-bold">Loved by Teams Worldwide</h1>
-        <p className="text-gray-800 text-xl">
-          See what our users have to say about TaskFlow
-        </p>
-      </div>
+    <div className="bg-white w-full px-4 sm:px-6 md:px-8 py-10 md:py-14">
+      <div className="w-full flex flex-col items-center text-center gap-2 md:gap-3 mb-10 md:mb-16">
+  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+    Loved by Teams Worldwide
+  </h1>
+  <p className="text-gray-800 text-sm sm:text-base md:text-lg max-w-md md:max-w-xl">
+    See what our users have to say about TaskFlow
+  </p>
+</div>
       <div className="justify-items-center md:w-[90%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
         {testimonialData.map((testimony, index) => (
           <TestimonialCard

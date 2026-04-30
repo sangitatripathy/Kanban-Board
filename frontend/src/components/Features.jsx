@@ -50,15 +50,17 @@ const Features = () => {
   ];
 
   return (
-    <div className="w-full sm:px-10 md:px-0 py-10 mx-auto bg-gray-100/50">
-      <div className="flex items-center flex-col gap-3 mb-10">
-        <h1 className="text-4xl font-bold">Everything You Need to Succeed</h1>
-        <p className="text-gray-800 text-2xl">
+    <div className="w-full px-4 sm:px-6 md:px-0 py-10 mx-auto bg-gray-100/50">
+      <div className="flex items-center text-center flex-col gap-2 md:gap-3 mb-8 md:mb-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+          Everything You Need to Succeed
+        </h1>
+        <p className="text-gray-800 text-sm sm:text-base md:text-lg max-w-md md:max-w-xl">
           Powerful features to help teams collaborate and deliver projects on
           time
         </p>
       </div>
-      <div className='md:w-[90%] px-10 grid md:grid-cols-3 gap-4 mx-auto'>
+      <div className="w-full md:w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 px-0 sm:px-2 md:px-0">
         {featuresData.map((feature, index) => (
           <FeatureCard
             key={index}
