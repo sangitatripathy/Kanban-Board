@@ -13,6 +13,7 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -25,6 +26,7 @@ const Login = () => {
 
   async function handleLogin(e) {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await postRequest("/auth/login", formData);
       if (res) {
@@ -54,10 +56,12 @@ const Login = () => {
       <div className="w-full max-w-md mb-5">
         <div
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer transition-opacity hover:opacity-70 group"
         >
-          <ArrowLeft className="text-gray-500" />
-          <p className="font-medium text-gray-700 text-sm">Back to home</p>
+          <ArrowLeft className="text-gray-500 group-hover:-translate-x-1 transition-transform" />
+          <p className="font-medium text-gray-700 text-xs md:text-sm">
+            Back to home
+          </p>
         </div>
       </div>
 
@@ -91,9 +95,21 @@ const Login = () => {
         <button
           type="submit"
           onClick={handleLogin}
-          className="w-full text-md bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+          disabled={loading}
+          className={`w-full text-md px-4 py-2 rounded-md mt-2 flex items-center justify-center gap-2 
+          ${
+            loading ?
+              "bg-blue-400 cursor-not-allowed text-white"
+            : "bg-blue-500 hover:bg-blue-600 text-white"
+          }
+        `}
         >
-          Sign In
+          {loading ?
+            <>
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Signing in...
+            </>
+          : "Sign In"}
         </button>
 
         <p
@@ -107,7 +123,7 @@ const Login = () => {
           Don't have an account?{" "}
           <Link
             to="/signup"
-            className="underline text-sm text-blue-500 cursor-pointer ml-1"
+            className="underline text-sm text-blue-500  cursor-pointer ml-1"
           >
             Sign up
           </Link>

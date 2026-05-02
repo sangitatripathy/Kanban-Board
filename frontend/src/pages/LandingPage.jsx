@@ -52,7 +52,7 @@ const LandingPage = () => {
           </p>
           <button
             onClick={() => navigate("/signup")}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg cursor-pointer text-sm"
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg cursor-pointer text-sm"
           >
             Get Started
           </button>
@@ -84,7 +84,7 @@ const LandingPage = () => {
             </p>
             <button
               onClick={() => navigate("/signup")}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg cursor-pointer"
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg cursor-pointer"
             >
               Get Started
             </button>

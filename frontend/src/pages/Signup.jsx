@@ -16,6 +16,7 @@ const Signup = () => {
   });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -28,6 +29,7 @@ const Signup = () => {
 
   const createAccount = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const data = new FormData();
       data.append("name", formData.name);
@@ -65,7 +67,6 @@ const Signup = () => {
           <p className="text-sm text-gray-600 font-normal mb-3">Start organizing your work today</p>
         </div>
 
-        {/* Profile Upload Section */}
         <div className="flex justify-center mb-2">
           <div className="relative w-16 h-16 md:w-20 md:h-20 group">
             {preview ? (
@@ -125,9 +126,19 @@ const Signup = () => {
 
         <button
           type="submit"
-          className="w-full text-md bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+          disabled={loading}
+          className={`w-full text-md px-4 py-2 rounded-md mt-2 flex items-center justify-center gap-2 
+            ${loading 
+              ? "bg-blue-400 cursor-not-allowed text-white" 
+              : "bg-blue-500 hover:bg-blue-600 text-white"}
+          `}
         >
-          Create Account
+          {loading ?
+            <>
+              <span className="w-4 h-4 border-2 text-white border-white border-t-transparent rounded-full animate-spin"></span>
+              Creating account...
+            </>
+          : "Create Account"}
         </button>
 
         <p className="text-center mt-4 text-gray-500 text-sm">
