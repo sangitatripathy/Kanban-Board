@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Ellipsis } from "lucide-react";
 import CardItem from "./CardItem";
+import { useCallback } from "react";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -23,6 +24,20 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
     transition,
   };
 
+  const handleCardClick = useCallback(
+    (card) => {
+      onCardClick(card);
+    },
+    [onCardClick],
+  );
+
+  const handleAddCard = useCallback(
+    (cardName) => {
+      onAddCard(cardName, column._id);
+    },
+    [onAddCard, column._id],
+  );
+
   return (
     <div
       ref={setNodeRef}
@@ -37,7 +52,9 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
         {...listeners}
         className="flex justify-between items-center mb-3 cursor-grab shrink-0"
       >
-        <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">{column.title}</h3>
+        <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">
+          {column.title}
+        </h3>
         <Ellipsis size={18} className="text-gray-500 dark:text-gray-400" />
       </div>
 
@@ -51,7 +68,7 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
             <CardItem
               key={card._id}
               card={{ ...card, columnId: column._id }}
-              onClick={onCardClick}
+              onClick={handleCardClick}
               boardMembers={column.boardMembers}
             />
           ))}
@@ -61,7 +78,7 @@ export default function SortableColumn({ column, onAddCard, onCardClick }) {
       <AddColumn
         message="Add a card"
         btnText="Add Card"
-        onAdd={(cardName) => onAddCard(cardName, column._id)}
+        onAdd={handleAddCard}
       />
     </div>
   );

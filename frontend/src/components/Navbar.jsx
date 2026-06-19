@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Moon, Sun, Bell, User, PanelLeft, CircleCheckBig } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useUser } from "../context/userContext";
@@ -8,6 +8,18 @@ const Navbar = ({ toggleDrawer, variant = "default", hideDrawer = false }) => {
   const { user } = useUser();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+
+  const handleToggleTheme = useCallback(() => {
+    toggleTheme();
+  }, [toggleTheme]);
+
+  const handleDrawerToggle = useCallback(() => {
+    toggleDrawer();
+  }, [toggleDrawer]);
+
+  const handleProfileClick = useCallback(() => {
+    navigate("/profile");
+  }, [navigate]);
 
   return (
     <div
@@ -33,21 +45,21 @@ const Navbar = ({ toggleDrawer, variant = "default", hideDrawer = false }) => {
         : <PanelLeft
             size={20}
             className="cursor-pointer"
-            onClick={toggleDrawer}
+            onClick={handleDrawerToggle}
           />
         }
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-4">
-        <button onClick={toggleTheme}>
+        <button onClick={handleToggleTheme}>
           {theme === "light" ?
             <Moon />
           : <Sun />}
         </button>
 
         <Bell />
-        <div onClick={()=> navigate('/profile')}>
+        <div onClick={handleProfileClick}>
           {user?.imageUrl ?
             <img
               src={`${user.imageUrl}`}

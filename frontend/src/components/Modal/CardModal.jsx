@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   X,
   Clock,
@@ -47,7 +47,7 @@ const CardModal = ({
   const [editText, setEditText] = useState("");
   const [priority, setPriority] = useState(card.priority);
 
-  const handleAddItem = async (checklistId) => {
+  const handleAddItem = useCallback(async (checklistId) => {
     try {
       const res = await putRequest(
         `/card/${card._id}/checklist/${checklistId}/item`,
@@ -61,9 +61,9 @@ const CardModal = ({
     } catch (error) {
       console.error(error.message);
     }
-  };
+  }, [card._id, itemText, handleChecklist]);
 
-  const updateItem = async (checklistId, itemId) => {
+  const updateItem = useCallback(async (checklistId, itemId) => {
     try {
       const res = await putRequest(
         `/card/${card._id}/checklist/${checklistId}/item/${itemId}`,
@@ -76,9 +76,9 @@ const CardModal = ({
     } catch (error) {
       console.error(error.message);
     }
-  };
+  }, [card._id, editText, handleChecklist]);
 
-  const deleteItem = async (checklistId, itemId) => {
+  const deleteItem = useCallback(async (checklistId, itemId) => {
     try {
       const res = await deleteRequest(
         `/card/${card._id}/checklist/${checklistId}/item/${itemId}`,
@@ -89,9 +89,9 @@ const CardModal = ({
     } catch (error) {
       console.error(error.message);
     }
-  };
+  }, [card._id, handleChecklist]);
 
-  const handlePriorityChange = async (priority) => {
+  const handlePriorityChange = useCallback(async (priority) => {
     try {
       const res = await putRequest(`/column/card/${card._id}`, {
         priority,
@@ -100,7 +100,7 @@ const CardModal = ({
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [card._id, handleUpdatePriority]);
 
   useEffect(() => {
     setPriority(card.priority);

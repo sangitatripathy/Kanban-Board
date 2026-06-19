@@ -1,27 +1,34 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
-const AddColumn = ({ onAdd,message,btnText }) => {
+const AddColumn = ({ onAdd, message, btnText }) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (!title.trim()) return;
     onAdd(title);
     setTitle("");
     setOpen(false);
-  };
+  }, [title, onAdd]);
+
+  const handleOpenClick = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleCancelClick = useCallback(() => {
+    setOpen(false);
+  }, []);
 
   return (
     <div className="w-66 shrink-0">
-      {!open ? (
+      {!open ?
         <button
-          onClick={() => setOpen(true)}
+          onClick={handleOpenClick}
           className="w-full bg-blue-500 hover:bg-blue-600 text-sm px-2 py-1 rounded-xl text-center text-white"
         >
           + {message}
         </button>
-      ) : (
-        <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow">
+      : <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -35,10 +42,15 @@ const AddColumn = ({ onAdd,message,btnText }) => {
             >
               Save
             </button>
-            <button onClick={() => setOpen(false)} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 text-[13px] rounded-xl">Cancel</button>
+            <button
+              onClick={handleCancelClick}
+              className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 text-[13px] rounded-xl"
+            >
+              Cancel
+            </button>
           </div>
         </div>
-      )}
+      }
     </div>
   );
 };

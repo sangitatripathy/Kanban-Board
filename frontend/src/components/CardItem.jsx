@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { priorityColor } from "@/utils/timeAgo";
 import { Archive, Clock } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
@@ -29,6 +29,15 @@ const CardItem = ({ card, onClick, boardMembers }) => {
     transition: "transform 200ms cubic-bezier(0.2, 0, 0, 1)",
   };
 
+  const handleCardClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      if (isDragging) return;
+      onClick(card);
+    },
+    [onClick, isDragging, card],
+  );
+
   const formattedDueDate =
     card.dueDate ?
       new Date(card.dueDate).toLocaleDateString("en-GB", {
@@ -55,11 +64,7 @@ const CardItem = ({ card, onClick, boardMembers }) => {
       className={`group bg-white dark:bg-gray-800 rounded-lg px-3 py-2 relative cursor-pointer shadow-sm hover:shadow-md transition ${
         isDragging ? "opacity-40 scale-95" : ""
       }`}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (isDragging) return;
-        onClick(card);
-      }}
+      onClick={handleCardClick}
     >
       <div className="flex justify-end opacity-0 group-hover:opacity-100 transition">
         <Archive
@@ -91,9 +96,9 @@ const CardItem = ({ card, onClick, boardMembers }) => {
           {formattedDueDate && (
             <div
               className={`flex items-center gap-1 text-[11px] px-2 py-0.5 rounded ${
-                isOverdue
-  ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-  : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                isOverdue ?
+                  "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
               }`}
             >
               <Clock size={12} />

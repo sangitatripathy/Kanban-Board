@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { ListFilter, Users, EllipsisVertical, X } from "lucide-react";
@@ -60,15 +60,15 @@ const Board = () => {
     }),
   );
 
-  const handleDragStart = (event) => {
+  const handleDragStart = useCallback((event) => {
     const { active } = event;
 
     if (active.data.current?.type === "card") {
       setActiveCard(active.data.current.card);
     }
-  };
+  }, []);
 
-  const handleDragEnd = async (event) => {
+  const handleDragEnd = useCallback(async (event) => {
     const { active, over } = event;
     if (!over) return;
 
@@ -172,9 +172,9 @@ const Board = () => {
         position: card.position,
       })),
     });
-  };
+  }, [columns]);
 
-  const handleAddColumn = async (title) => {
+  const handleAddColumn = useCallback(async (title) => {
     try {
       const res = await postRequest(`/board/${boardData._id}/columns`, {
         title,
@@ -184,9 +184,9 @@ const Board = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [boardData]);
 
-  const handleAddCard = async (cardName, column) => {
+  const handleAddCard = useCallback(async (cardName, column) => {
     const res = await postRequest(`/column/${column}`, {
       cardName,
       boardId: boardData._id,
@@ -204,17 +204,17 @@ const Board = () => {
         : col,
       );
     });
-  };
+  }, [boardData]);
 
-  const handleUpdateBoardLabels = (updatedLabels) => {
+  const handleUpdateBoardLabels = useCallback((updatedLabels) => {
     console.log(updatedLabels);
     setBoardData((prev) => ({
       ...prev,
       labels: updatedLabels,
     }));
-  };
+  }, []);
 
-  const handleAssignLabels = (cardId, labels) => {
+  const handleAssignLabels = useCallback((cardId, labels) => {
     setColumns((prev) =>
       prev.map((col) => ({
         ...col,
@@ -227,9 +227,9 @@ const Board = () => {
     setSelectedCard((prev) =>
       prev && prev._id === cardId ? { ...prev, labels } : prev,
     );
-  };
+  }, []);
 
-  const handleUpdateCardDates = (cardId, dates) => {
+  const handleUpdateCardDates = useCallback((cardId, dates) => {
     setColumns((prev) =>
       prev.map((col) => ({
         ...col,
@@ -248,9 +248,9 @@ const Board = () => {
     setSelectedCard((prev) =>
       prev && prev._id === cardId ? { ...prev, ...dates } : prev,
     );
-  };
+  }, []);
 
-  const handleUpdateChecklist = (cardId, checklist) => {
+  const handleUpdateChecklist = useCallback((cardId, checklist) => {
     setColumns((prev) =>
       prev.map((col) => ({
         ...col,
@@ -263,9 +263,9 @@ const Board = () => {
     setSelectedCard((prev) =>
       prev && prev._id === cardId ? { ...prev, checklist } : prev,
     );
-  };
+  }, []);
 
-  const handleAddMember = async (userId) => {
+  const handleAddMember = useCallback(async (userId) => {
     try {
       const role = selectedRoles[userId] || "member";
 
@@ -294,15 +294,15 @@ const Board = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [selectedRoles, boardData, orgMembers]);
 
-  const getOrgMembers = async (orgId) => {
+  const getOrgMembers = useCallback(async (orgId) => {
     const res = await getRequest(`/member/${orgId}`);
     setOrgMembers(res);
     setShowMembers(true);
-  };
+  }, []);
 
-  const handleUpdatePriority = (cardId, priority) => {
+  const handleUpdatePriority = useCallback((cardId, priority) => {
     setColumns((prev) =>
       prev.map((col) => ({
         ...col,
@@ -315,9 +315,9 @@ const Board = () => {
     setSelectedCard((prev) =>
       prev && prev._id === cardId ? { ...prev, priority } : prev,
     );
-  };
+  }, []);
 
-  const handleUpdateAssignees = (cardId, assignees) => {
+  const handleUpdateAssignees = useCallback((cardId, assignees) => {
     setColumns((prev) =>
       prev.map((col) => ({
         ...col,
@@ -330,7 +330,7 @@ const Board = () => {
     setSelectedCard((prev) =>
       prev && prev._id === cardId ? { ...prev, assignees } : prev,
     );
-  };
+  }, []);
 
   const members = boardData?.members || [];
   const visibleMembers = members.slice(0, 5);
